@@ -7,6 +7,12 @@ set -ex
 # Setup
 # -------------------------------------------------- 
 
+# upgrade packages (ordinarily 'pacman -Syu', but binaries were moved - may not be needed with newer iso images)
+#  https://www.archlinux.org/news/binaries-move-to-usrbin-requiring-update-intervention/
+pacman -Syu --ignore filesystem,bash
+pacman -S bash
+pacman -Su
+
 # create user account (daryl in group users)
 useradd -m -g users -s /bin/bash daryl
 passwd daryl
@@ -38,7 +44,7 @@ then
   pacman -S virtualbox-guest-utils
   modprobe -a vboxguest vboxsf vboxvideo
   echo -e "vboxguest\nvboxsf\nvboxvideo" > /etc/modules-load.d/virtualbox.conf
-  echo -e "~/.xinitrc\n/usr/bin/VBoxClient-all" > /home/daryl/.xinitrc
+  echo "/usr/bin/VBoxClient-all" > /home/daryl/.xinitrc
 fi
 
 # install basic vesa video driver
@@ -55,3 +61,6 @@ fi
 
 # install kde with meta-packages
 pacman -S kde-meta
+
+# enable autologin with kde
+systemctl enable kdm

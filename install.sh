@@ -29,22 +29,25 @@ arch_chroot() {
 # display partition table(s)
 lsblk | grep '^sd' | cut -c 1-3 | xargs -i parted /dev/{} print
 
-# assume first sdx drive for now
+# assume first sdx drive for user prompt
 DRIVE=/dev/`lsblk | grep '^sd' | head -n 1 | cut -c 1-3`
 
 # assume first ext4 partition is root, last ext4 partition is home
 ROOT_PART=`parted "$DRIVE" print | grep ext4 | head -n 1 | cut -c 2`
 HOME_PART=`parted "$DRIVE" print | grep ext4 | tail -n 1 | cut -c 2`
+SWAP_PART=`parted "$DRIVE" print | grep swap | tail -n 1 | cut -c 2`
 
-# prompt for root and home partitions
+# prompt for root, home, and swap partitions
 read -e -p "Root partition: " -i "$DRIVE$ROOT_PART" ROOT
 read -e -p "Home partition: " -i "$DRIVE$HOME_PART" HOME
+read -e -p "Swap partition: " -i "$DRIVE$SWAP_PART" SWAP
 
 # set up mounts
 echo -e "\nMounting / to $ROOT\nMounting /home to $HOME\n\n"
 mount "$ROOT" /mnt
 mkdir -p /mnt/home
 mount "$HOME" /mnt/home
+swapon "$SWAP"
 
 # -------------------------------------------------- 
 # Set up pacman mirrors
@@ -62,15 +65,13 @@ mount "$HOME" /mnt/home
 # install packages
 pacstrap /mnt base
 
-# generate fstab
-genfstab -U -p /mnt >> /mnt/etc/fstab
+# generate fstab (using > instead of >> to prevent duplicate entries)
+genfstab -U -p /mnt > /mnt/etc/fstab
 
 # prompt user that this looks kosher
 cat /mnt/etc/fstab
 read -p "Press Ctrl-C if this doesn't look okay..."
 
-# chroot into new system
-#arch-chroot /mnt /bin/bash
 
 # -------------------------------------------------- 
 # Configure system
