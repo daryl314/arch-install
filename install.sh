@@ -62,8 +62,8 @@ swapon "$SWAP"
 # Install base system
 # -------------------------------------------------- 
 
-# install packages
-pacstrap /mnt base
+# install packages (adding wget to fetch post-install scripts)
+pacstrap /mnt base wget
 
 # generate fstab (using > instead of >> to prevent duplicate entries)
 genfstab -U -p /mnt > /mnt/etc/fstab
