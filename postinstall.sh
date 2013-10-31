@@ -173,11 +173,11 @@ tar zxvf Sweet.tar.gz
 tar zxvf Kawai.tar.gz
 rm Sweet.tar.gz
 rm Kawai.tar.gz
-mkdir -p /home/${USER_NAME}/.kde4/share/apps/color-schemes
-mv Sweet/*.colors /home/${USER_NAME}/.kde4/share/apps/color-schemes
-mv Kawai/*.colors /home/${USER_NAME}/.kde4/share/apps/color-schemes
-mkdir -p /home/${USER_NAME}/.kde4/share/apps/QtCurve
-mv Sweet/Sweet.qtcurve /home/${USER_NAME}/.kde4/share/apps/QtCurve
-mv Kawai/Kawai.qtcurve /home/${USER_NAME}/.kde4/share/apps/QtCurve
-chown -R ${USER_NAME}:users /home/${USER_NAME}/.kde4
+mkdir -p /home/daryl/.kde4/share/apps/color-schemes
+mv Sweet/*.colors /home/daryl/.kde4/share/apps/color-schemes
+mv Kawai/*.colors /home/daryl/.kde4/share/apps/color-schemes
+mkdir -p /home/daryl/.kde4/share/apps/QtCurve
+mv Sweet/Sweet.qtcurve /home/daryl/.kde4/share/apps/QtCurve
+mv Kawai/Kawai.qtcurve /home/daryl/.kde4/share/apps/QtCurve
+chown -R daryl:users /home/daryl/.kde4
 rm -fr Kawai Sweet
