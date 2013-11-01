@@ -57,9 +57,15 @@ aur_build() {
 # Build and install yaourt
 aur_build "package-query yaourt"
 
+failure_notify() {
+  echo ""
+  echo -e "\e[1;31mPackage installation failed: $@\e[0m"
+  read -e -sn 1 -p "Press any key to continue..."
+}
+
 # Function to install packages without confirmation (can AUR and main packages be combined in a single command?).  Will this handle multiple nonquoted packages, or do I have to rework this??
 package_install() {
-  yaourt -S --noconfirm $@
+  yaourt -S --noconfirm $@ || failure_notify $@
 }
 
 # Function to remove packages (without confirmation??)
@@ -119,9 +125,16 @@ fi
 # install dependencies (kde devs suggest gstreamer over vlc)
 package_install phonon-gstreamer mesa-libgl ttf-bitstream-vera
 
-# install kde
+# install kde excluding the initial 'kde ' from each line and removing selected packages from list
 # list of all packages w/ descriptions: https://www.archlinux.org/groups/x86_64/kde/
-package_install `pacman -Sg kde | grep -vF -e kdeaccessibility- -e kdeedu- -e kdegames- -e kdepim- -e kdetoys-`
+package_install `pacman -Sg kde | \
+  cut -c 5- | \
+  grep -v \
+    -e ^kdeaccessibility \
+    -e ^kdeedu \
+    -e ^kdegames \
+    -e ^kdepim \
+    -e ^kdetoys`
 
 # remove some packages from base install
 package_remove kdemultimedia-kscd kdemultimedia-juk kdebase-kwrite kdebase-konqueror
