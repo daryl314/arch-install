@@ -194,3 +194,19 @@ mv Sweet/Sweet.qtcurve /home/daryl/.kde4/share/apps/QtCurve
 mv Kawai/Kawai.qtcurve /home/daryl/.kde4/share/apps/QtCurve
 chown -R daryl:users /home/daryl/.kde4
 rm -fr Kawai Sweet
+
+# --------------------------------------------------
+# Math software
+# -------------------------------------------------- 
+
+# install scipy stack
+package_install python-matplotlib python-numpy python-scipy python-sympy python-nose
+package_install ipython python-jinja python-tornado # ipython and ipython notebook
+package_install python-pygments python-pyqt4 python-pyzmq python-sip # qtconsole dependencies
+package_install python-pandas # needs to be compiled
+
+# additional python packages
+package_install python-requests
+
+# need a web browser
+package_install google-chrome
