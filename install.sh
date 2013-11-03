@@ -69,6 +69,8 @@ pacstrap /mnt base wget
 genfstab -U -p /mnt > /mnt/etc/fstab
 
 # prompt user that this looks kosher
+echo ""
+echo "===== New fstab ====="
 cat /mnt/etc/fstab
 read -p "Press Ctrl-C if this doesn't look okay..."
 
@@ -97,6 +99,8 @@ arch_chroot "sed -i '/::1/s/$/ '${HN}'/' /etc/hosts"
 arch_chroot "systemctl enable dhcpcd.service"
 
 # set root password
+echo ""
+echo "===== Root password ====="
 arch_chroot "passwd"
 
 # install bootloader
@@ -104,7 +108,44 @@ pacstrap /mnt grub
 arch_chroot "grub-install --target=i386-pc --recheck ${DRIVE}"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
-# unmount and reboot
+# -------------------------------------------------- 
+# User Management
+# --------------------------------------------------
+
+# create user account: daryl
+# add to user and sudo groups
+arch_chroot "useradd -m -g users -G wheel -s /bin/bash daryl"
+echo ""
+echo "===== Password for daryl ====="
+arch_chroot "passwd daryl"
+
+# install sudo
+pacstrap /mnt sudo
+
+# Uncomment to allow members of group wheel to execute any command
+sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /mnt/etc/sudoers
+
+# This config is especially helpful for those using terminal multiplexers like screen, tmux, or ratpoison, and those using sudo from scripts/cronjobs:
+echo "
+Defaults !requiretty, !tty_tickets, !umask
+Defaults visiblepw, path_info, insults, lecture=always
+Defaults loglinelen=0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
+Defaults passwd_tries=3, passwd_timeout=1
+Defaults env_reset, always_set_home, set_home, set_logname
+Defaults timestamp_timeout=300
+" >> /mnt/etc/sudoers
+
+# -------------------------------------------------- 
+# Fetch post-install script(s)
+# --------------------------------------------------
+
+# postinstall.sh
+wget -O /mnt/home/daryl/postinstall.sh https://gitlab.com/daryl314/arch/raw/master/postinstall.sh?private_token=vSwfe1xzGbzPbPeDNpZ7
+
+# -------------------------------------------------- 
+# Unmount and reboot
+# --------------------------------------------------
+
 umount /mnt/home
 umount /mnt
 reboot
