@@ -7,10 +7,21 @@
 * Get script from inner machine: wget 192.168.254.143:8000/install.sh
 * Run script from inner machine: bash install.sh
 
+## Post-installation
+
+* Log in as daryl
+* `bash postinstall.sh`
+
 ## Fetching from Gitlab
 
-* ```wget -O install.sh https://gitlab.com/daryl314/desktop-installers/raw/master/arch/install.sh?private_token=vSwfe1xzGbzPbPeDNpZ7```
-* ```wget -O postinstall.sh https://gitlab.com/daryl314/desktop-installers/raw/master/arch/postinstall.sh?private_token=vSwfe1xzGbzPbPeDNpZ7```
+```
+gitlab-fetch() {
+  wget -O $1 "https://gitlab.com/daryl314/arch/raw/master/$1?private_token=vSwfe1xzGbzPbPeDNpZ7"
+}
+```
+
+* `gitlab-fetch install.sh`
+* `gitlab-fetch postinstall.sh`
 
 ## Arch references
 
