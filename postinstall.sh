@@ -4,53 +4,26 @@
 set -ex
 
 # -------------------------------------------------- 
-# Setup
-# -------------------------------------------------- 
-
-# upgrade packages
-#  https://www.archlinux.org/news/binaries-move-to-usrbin-requiring-update-intervention/
-pacman -Syu --noconfirm
-
-# create user account (daryl in group users)
-useradd -m -g users -G wheel -s /bin/bash daryl
-passwd daryl
-
-# -------------------------------------------------- 
 # Package management
 # --------------------------------------------------
 
+# upgrade packages
+#  https://www.archlinux.org/news/binaries-move-to-usrbin-requiring-update-intervention/
+sudo pacman -Syu --noconfirm
+
 # Prerequisites for building yaourt (base devel + dependencies listed in build file)
-pacman -S --noconfirm base-devel yajl diffutils
-
-# Install sudo and add 'daryl' to sudoers
-# !requiretty needed for noninteractive package building
-pacman -S --noconfirm sudo
-
-# Uncomment to allow members of group wheel to execute any command
-sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /etc/sudoers
-
-# This config is especially helpful for those using terminal multiplexers like screen, tmux, or ratpoison, and those using sudo from scripts/cronjobs:
-echo "
-Defaults !requiretty, !tty_tickets, !umask
-Defaults visiblepw, path_info, insults, lecture=always
-Defaults loglinelen=0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
-Defaults passwd_tries=3, passwd_timeout=1
-Defaults env_reset, always_set_home, set_home, set_logname
-Defaults timestamp_timeout=300
-" >> /etc/sudoers
+sudo pacman -S --noconfirm base-devel yajl diffutils
 
 # Function to build and install packages from the AUR (as user instead of root)
 aur_build() {
   for PKG in $1; do
-    su - daryl -c "
-      [[ ! -d build ]] && mkdir build
-      cd build
-      curl -o $PKG.tar.gz https://aur.archlinux.org/packages/${PKG:0:2}/$PKG/$PKG.tar.gz
-      tar zxvf $PKG.tar.gz
-      rm $PKG.tar.gz
-      cd $PKG
-      makepkg -csi --noconfirm
-    "
+    [[ ! -d build ]] && mkdir build
+    cd build
+    curl -o $PKG.tar.gz https://aur.archlinux.org/packages/${PKG:0:2}/$PKG/$PKG.tar.gz
+    tar zxvf $PKG.tar.gz
+    rm $PKG.tar.gz
+    cd $PKG
+    makepkg -csi --noconfirm
   done
 }
 
@@ -102,12 +75,12 @@ package_install mesa
 if lspci | grep -q VirtualBox
 then
   package_install virtualbox-guest-utils
-  modprobe -a vboxguest vboxsf vboxvideo
-  echo -e "vboxguest\nvboxsf\nvboxvideo" > /etc/modules-load.d/virtualbox.conf
+  sudo modprobe -a vboxguest vboxsf vboxvideo
+  sudo echo -e "vboxguest\nvboxsf\nvboxvideo" | sudo tee -a /etc/modules-load.d/virtualbox.conf
   echo "/usr/bin/VBoxClient-all" > /home/daryl/.xinitrc
-  systemctl enable vboxservice.service
-  [ grep -q vboxsf /etc/group ] && groupadd vboxsf
-  gpasswd -a daryl vboxsf
+  sudo systemctl enable vboxservice.service
+  [ grep -q vboxsf /etc/group ] && sudo groupadd vboxsf
+  sudo gpasswd -a daryl vboxsf
 fi
 
 # install basic vesa video driver
@@ -117,6 +90,15 @@ if ! lspci | grep -q VirtualBox
 then
   package_install xf86-video-vesa
 fi
+
+# -------------------------------------------------- 
+# Common setup
+# --------------------------------------------------
+
+#Abstraction for enumerating power devices, listening to device events and querying history and statistics
+# http://upower.freedesktop.org/
+# do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
+#system_ctl enable upower
 
 # --------------------------------------------------
 # KDE
@@ -156,14 +138,8 @@ package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install wicd-kde                          # network manager (needed?)
 
-# configure startup of kde (probably can eliminate xinitrc...)
-#config_xinitrc "startkde"
+# configure startup of kde
 systemctl enable kdm
-
-#Abstraction for enumerating power devices, listening to device events and querying history and statistics
-# http://upower.freedesktop.org/
-# do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
-#system_ctl enable upower
 
 # increase number of nepomuk watched files (from arch kde wiki page)
 echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.d/99-inotify.conf
@@ -210,3 +186,60 @@ package_install python-requests
 
 # need a web browser
 package_install google-chrome
+
+# --------------------------------------------------
+# E17
+# -------------------------------------------------- 
+
+# install base E17 packages
+package_install enlightenment17                 # E17
+package_install gvfs                            # Gnome virtual filesystem
+package_install xdg-user-dirs                   # Common directories
+package_install leafpad epdfview                # Editor and PDF viewer
+package_install lxappearance                    # GTK theme switcher 
+package_install ttf-bitstream-vera ttf-dejavu   # Fonts
+package_install gnome-defaults-list             # Default file associations for gnome
+
+# config xinitrc (can probably ignore if using kdm)
+#config_xinitrc "enlightenment_start"
+
+# network management
+# conflicts with openresolv, so raises an error...
+#package_install connman
+#systemctl enable connman
+
+# install and enable lxdm unless kdm is already installed
+pacman -Qs kdebase-workspace > dev/null || package_install lxdm
+pacman -Qs kdebase-workspace > dev/null || sudo systemctl enable lxdm
+
+# install miscellaneous apps
+package_install dmenu           # dynamic menu manager
+package_install viewnior        # image viewer
+package_install gmrun           # lightweight application runner
+package_install pcmanfm         # file manager
+package_install terminology     # terminal application
+package_install scrot           # screenshot tool
+package_install squeeze-git     # archive manager (install fails)
+package_install thunar tumbler  # file manager and thumbnail service
+package_install tint2           # system panel/taskbar
+package_install volwheel        # volume tray icon
+package_install xfburn          # cd/dvd burning tool
+package_install xcompmgr        # compositing window manager
+package_install transset-df     # enable transparency for xcompmgr
+package_install zathura         # document viewer
+
+# install icon themes
+package_install elementary-xfce-icons
+package_install moka-icon-theme-git
+
+# install gtk themes (clean up this list if i don't like them all - slow)
+package_install xfce-theme-greybird-git
+package_install gtk-theme-numix-git
+package_install gtk-theme-orion-git
+
+# install themes
+# https://wiki.archlinux.org/index.php/Enlightenment#Installing_themes
+wget http://exchange.enlightenment.org/theme/get/304 -O ~/.e/e/themes/simply-white.edj
+wget http://exchange.enlightenment.org/theme/get/294 -O ~/.e/e/themes/cerium.edj
+wget http://exchange.enlightenment.org/theme/get/274 -O ~/.e/e/themes/cthulhain.edj
+

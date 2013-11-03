@@ -1,4 +1,4 @@
-# Daryl's desktop installation scripts
+# Arch installation notes
 
 ## Installation of a new arch linux system
 
