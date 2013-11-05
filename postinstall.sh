@@ -8,7 +8,6 @@ set -ex
 # --------------------------------------------------
 
 # upgrade packages
-#  https://www.archlinux.org/news/binaries-move-to-usrbin-requiring-update-intervention/
 sudo pacman -Syu --noconfirm
 
 # Prerequisites for building yaourt (base devel + dependencies listed in build file)
@@ -98,7 +97,12 @@ fi
 #Abstraction for enumerating power devices, listening to device events and querying history and statistics
 # http://upower.freedesktop.org/
 # do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
+# https://wiki.archlinux.org/index.php/Systemd#Power_management
 #system_ctl enable upower
+
+# extra fonts
+package_install ttf-inconsolata ttf-win7-fonts
+
 
 # --------------------------------------------------
 # KDE
