@@ -103,6 +103,18 @@ fi
 # extra fonts
 package_install ttf-inconsolata ttf-win7-fonts
 
+# readahead - improve boot time
+# https://wiki.archlinux.org/index.php/Improve_Boot_Performance#Readahead
+sudo systemctl enable systemd-readahead-collect systemd-readahead-replay
+
+# zram - compressed swap in RAM
+# https://wiki.archlinux.org/index.php/Maximizing_Performance#Compcache.2FZram
+package_install zramswap
+sudo systemctl enable zramswap
+
+# laptop touchpad driver
+# https://wiki.archlinux.org/index.php/Touchpad_Synaptics
+package_install xf86-input-synaptics
 
 # --------------------------------------------------
 # KDE
