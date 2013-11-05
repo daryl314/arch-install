@@ -116,6 +116,17 @@ sudo systemctl enable zramswap
 # https://wiki.archlinux.org/index.php/Touchpad_Synaptics
 package_install xf86-input-synaptics
 
+# virtualbox shared folder mounting
+if lspci | grep -q VirtualBox
+then 
+  sudo mkdir /mnt/daryl
+  echo "
+# virtualbox shared folder
+daryl                                           /mnt/daryl      vboxsf          defaults        0 0
+" | sudo tee -a /etc/fstab
+fi
+
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
