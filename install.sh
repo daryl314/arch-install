@@ -135,6 +135,21 @@ Defaults env_reset, always_set_home, set_home, set_logname
 Defaults timestamp_timeout=300
 " >> /mnt/etc/sudoers
 
+# Root bashrc
+echo "#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Colorize ls
+alias ls='ls --color=auto'
+
+# Red prompt for root
+PS1='\[\e[1;31m\][\u@\h \W]\$\[\e[0m\] '
+" > /mnt/root/.bashrc
+
 # -------------------------------------------------- 
 # Fetch post-install script(s)
 # --------------------------------------------------
