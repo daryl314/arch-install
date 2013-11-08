@@ -152,6 +152,9 @@ daryl                                           /mnt/daryl      vboxsf          
 " | sudo tee -a /etc/fstab
 fi
 
+# enable auto-completion and "command not found"
+package_install bash-completion pkgfile
+sudo pkgfile --update
 
 # --------------------------------------------------
 # KDE
@@ -186,7 +189,6 @@ package_install xdg-user-dirs
 # install additional packages
 package_install digikam kipi-plugins              # kde photo manager
 package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
-package_install caledonia-bundle                  # caledonia kde theme
 package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install wicd-kde                          # network manager (needed?)
@@ -207,22 +209,6 @@ mkdir -p ~/.compose-cache
 # common theming with gtk apps
 package_install kde-gtk-config
 package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
-
-# qtcurve themes
-curl -o Sweet.tar.gz http://kde-look.org/CONTENT/content-files/144205-Sweet.tar.gz
-curl -o Kawai.tar.gz http://kde-look.org/CONTENT/content-files/141920-Kawai.tar.gz
-tar zxvf Sweet.tar.gz
-tar zxvf Kawai.tar.gz
-rm Sweet.tar.gz
-rm Kawai.tar.gz
-mkdir -p /home/daryl/.kde4/share/apps/color-schemes
-mv Sweet/*.colors /home/daryl/.kde4/share/apps/color-schemes
-mv Kawai/*.colors /home/daryl/.kde4/share/apps/color-schemes
-mkdir -p /home/daryl/.kde4/share/apps/QtCurve
-mv Sweet/Sweet.qtcurve /home/daryl/.kde4/share/apps/QtCurve
-mv Kawai/Kawai.qtcurve /home/daryl/.kde4/share/apps/QtCurve
-chown -R daryl:users /home/daryl/.kde4
-rm -fr Kawai Sweet
 
 # --------------------------------------------------
 # Math software
