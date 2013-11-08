@@ -46,6 +46,32 @@ package_remove() {
 }
 
 # -------------------------------------------------- 
+# Dotfile setup
+# --------------------------------------------------
+
+# Install git
+yaourt -S git tk git-cola yelp-tools giggle-git
+git config --global user.name "Daryl St. Laurent"
+git config --global user.email "daryl.stlaurent@gmail.com"
+git config --global color.ui true
+
+# Copy ssh keys from shared folder
+if lspci | grep -q VirtualBox
+then
+  sudo mount -t vboxsf daryl /mnt/daryl
+  mkdir -p ~/.ssh
+  sudo cp /mnt/daryl/Private/.ssh/id_rsa /home/daryl/.ssh/
+  sudo cp /mnt/daryl/Private/.ssh/id_rsa.pub /home/daryl/.ssh/
+  sudo chown daryl:users /home/daryl/.ssh/id_rsa*
+fi
+
+# Clone dotfiles repository from gitlab
+git clone git@gitlab.com:daryl314/dotfiles.git
+
+# Link dotfiles
+dotfiles/make_links
+
+# -------------------------------------------------- 
 # Audio setup
 # -------------------------------------------------- 
 
