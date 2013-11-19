@@ -148,7 +148,7 @@ then
   sudo mkdir /mnt/daryl
   echo "
 # virtualbox shared folder
-daryl                                           /mnt/daryl      vboxsf          defaults        0 0
+daryl                                           /mnt/daryl      vboxsf          defaults,uid=`id -u`   0 0
 " | sudo tee -a /etc/fstab
 fi
 
