@@ -116,6 +116,27 @@ then
   package_install xf86-video-vesa
 fi
 
+# add font rendering repositories
+# https://wiki.archlinux.org/index.php/Infinality-bundle%2Bfonts
+echo "
+[infinality-bundle]
+Server = http://ibn.net63.net/infinality-bundle/\$arch" | sudo tee -a /etc/pacman.conf 
+[[ `uname -m` == x86_64 ]] && echo "
+[infinality-bundle-multilib]
+Server = http://ibn.net63.net/infinality-bundle-multilib/\$arch" | sudo tee -a /etc/pacman.conf
+echo "
+[infinality-bundle-fonts]
+Server = http://ibn.net63.net/infinality-bundle-fonts" | sudo tee -a /etc/pacman.conf
+
+# set up font rendering
+sudo pacman-key -r 962DDE58
+sudo pacman-key --lsign-key 962DDE58
+sudo pacman -Syyu
+#package_remove freetype2-infinality fontconfig fontconfig-infinality cairo ttf-dejavu
+package_install infinality-bundle ibfonts-meta-extended
+[[ `uname -m` == x86_64 ]] && package_install infinality-bundle-multilib 
+fc-presets set
+
 # -------------------------------------------------- 
 # Common setup
 # --------------------------------------------------
