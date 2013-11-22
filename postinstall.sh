@@ -16,8 +16,8 @@ sudo pacman -S --noconfirm base-devel yajl diffutils
 # Function to build and install packages from the AUR (as user instead of root)
 aur_build() {
   for PKG in $1; do
-    [[ ! -d build ]] && mkdir build
-    cd build
+    [[ ! -d /tmp/build ]] && mkdir /tmp/build
+    cd /tmp/build
     curl -o $PKG.tar.gz https://aur.archlinux.org/packages/${PKG:0:2}/$PKG/$PKG.tar.gz
     tar zxvf $PKG.tar.gz
     rm $PKG.tar.gz
@@ -35,8 +35,9 @@ failure_notify() {
   read -e -sn 1 -p "Press any key to continue..."
 }
 
-# Function to install packages without confirmation (can AUR and main packages be combined in a single command?).  Will this handle multiple nonquoted packages, or do I have to rework this??
+# Function to install packages without confirmation
 package_install() {
+#  /bin/rm -rf /tmp/* /tmp/.* &>/dev/null # clear tmp folder
   yaourt -S --noconfirm $@ || failure_notify $@
 }
 
@@ -46,30 +47,86 @@ package_remove() {
 }
 
 # -------------------------------------------------- 
-# Dotfile setup
+# Virtualbox guest additions setup
 # --------------------------------------------------
 
-# Install git
-yaourt -S git tk git-cola yelp-tools giggle-git
-git config --global user.name "Daryl St. Laurent"
-git config --global user.email "daryl.stlaurent@gmail.com"
-git config --global color.ui true
+# setup is required for later sections
 
-# Copy ssh keys from shared folder
+# set up virtualbox guest additions 
+# https://wiki.archlinux.org/index.php/VirtualBox#Arch_Linux_as_a_guest_in_a_Virtual_Machine
 if lspci | grep -q VirtualBox
 then
-  sudo mount -t vboxsf daryl /mnt/daryl
-  mkdir -p ~/.ssh
-  sudo cp /mnt/daryl/Private/.ssh/id_rsa /home/daryl/.ssh/
-  sudo cp /mnt/daryl/Private/.ssh/id_rsa.pub /home/daryl/.ssh/
-  sudo chown daryl:users /home/daryl/.ssh/id_rsa*
+  package_install virtualbox-guest-utils
+  sudo modprobe -a vboxguest vboxsf vboxvideo
+  sudo echo -e "vboxguest\nvboxsf\nvboxvideo" | sudo tee -a /etc/modules-load.d/virtualbox.conf
+  echo "/usr/bin/VBoxClient-all" > /home/daryl/.xinitrc
+  sudo systemctl enable vboxservice.service
+  [ grep -q vboxsf /etc/group ] && sudo groupadd vboxsf
+  sudo gpasswd -a daryl vboxsf
 fi
 
-# Clone dotfiles repository from gitlab
-git clone git@gitlab.com:daryl314/dotfiles.git
+# virtualbox shared folder mounting
+if lspci | grep -q VirtualBox
+then 
+  sudo mkdir /mnt/daryl
+  echo "
+# virtualbox shared folder
+daryl                                           /mnt/daryl      vboxsf          defaults,uid=`id -u`   0 0
+" | sudo tee -a /etc/fstab
+fi
 
-# Link dotfiles
-dotfiles/make_links
+# -------------------------------------------------- 
+# Graphics setup
+# -------------------------------------------------- 
+
+# add font rendering repositories
+# https://wiki.archlinux.org/index.php/Infinality-bundle%2Bfonts
+echo "
+[infinality-bundle]
+Server = http://ibn.net63.net/infinality-bundle/\$arch" | sudo tee -a /etc/pacman.conf 
+[[ `uname -m` == x86_64 ]] && echo "
+[infinality-bundle-multilib]
+Server = http://ibn.net63.net/infinality-bundle-multilib/\$arch" | sudo tee -a /etc/pacman.conf
+echo "
+[infinality-bundle-fonts]
+Server = http://ibn.net63.net/infinality-bundle-fonts" | sudo tee -a /etc/pacman.conf
+
+# set up font rendering
+# needs to be before xorg to avoid conflicts
+sudo pacman-key -r 962DDE58
+sudo pacman-key --lsign-key 962DDE58
+sudo pacman -Syyu
+package_install infinality-bundle ibfonts-meta-extended
+[[ `uname -m` == x86_64 ]] && package_install infinality-bundle-multilib 
+
+# install the base Xorg packages:
+package_install xorg-server xorg-server-utils xorg-xinit
+
+# install mesa for 3D support:
+package_install mesa
+
+# install basic vesa video driver
+# see instructions for getting acceleration working:
+#   https://wiki.archlinux.org/index.php/Xorg#Driver_installation
+if ! lspci | grep -q VirtualBox
+then
+  package_install xf86-video-vesa
+fi
+
+# extra fonts
+package_install t1-inconsolata-zi4-ibx
+
+# windows 7 fonts
+sudo mkdir /usr/share/fonts/win7
+if lspci | grep -q VirtualBox 
+then 
+  sudo cp /mnt/daryl/Backups/Software/Windows\ Software/Windows\ 7\ Fonts/* /usr/share/fonts/win7
+else
+  sudo cp /home/daryl/Backups/Software/Windows\ Software/Windows\ 7\ Fonts/* /usr/share/fonts/win7
+fi
+sudo fc-cache -vf
+sudo mkfontscale
+sudo mkfontdir
 
 # -------------------------------------------------- 
 # Audio setup
@@ -86,56 +143,37 @@ then
 fi
 
 # -------------------------------------------------- 
-# Graphics setup
-# -------------------------------------------------- 
+# Dotfile setup
+# --------------------------------------------------
 
-# install the base Xorg packages:
-package_install xorg-server xorg-server-utils xorg-xinit
+# Install git
+package_install git tk
+git config --global user.name "Daryl St. Laurent"
+git config --global user.email "daryl.stlaurent@gmail.com"
+git config --global color.ui true
 
-# install mesa for 3D support:
-package_install mesa
+# Install ssh
+package_install openssh
 
-# set up virtualbox guest additions 
-# https://wiki.archlinux.org/index.php/VirtualBox#Arch_Linux_as_a_guest_in_a_Virtual_Machine
+# Copy ssh keys from shared folder
 if lspci | grep -q VirtualBox
 then
-  package_install virtualbox-guest-utils
-  sudo modprobe -a vboxguest vboxsf vboxvideo
-  sudo echo -e "vboxguest\nvboxsf\nvboxvideo" | sudo tee -a /etc/modules-load.d/virtualbox.conf
-  echo "/usr/bin/VBoxClient-all" > /home/daryl/.xinitrc
-  sudo systemctl enable vboxservice.service
-  [ grep -q vboxsf /etc/group ] && sudo groupadd vboxsf
-  sudo gpasswd -a daryl vboxsf
+  sudo mount -t vboxsf daryl /mnt/daryl
+  mkdir -p ~/.ssh
+  sudo cp /mnt/daryl/Private/.ssh/id_rsa /home/daryl/.ssh/
+  sudo cp /mnt/daryl/Private/.ssh/id_rsa.pub /home/daryl/.ssh/
+  sudo chown daryl:users /home/daryl/.ssh/id_rsa*
 fi
 
-# install basic vesa video driver
-# see instructions for getting acceleration working:
-#   https://wiki.archlinux.org/index.php/Xorg#Driver_installation
-if ! lspci | grep -q VirtualBox
+# Script to pull dotfiles repository from gitlab
+if lspci | grep -q VirtualBox
 then
-  package_install xf86-video-vesa
+  echo "
+    ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+    git clone git@gitlab.com:daryl314/dotfiles.git
+    source dotfiles/make_links
+  " > ~/pull_dotfiles.sh
 fi
-
-# add font rendering repositories
-# https://wiki.archlinux.org/index.php/Infinality-bundle%2Bfonts
-echo "
-[infinality-bundle]
-Server = http://ibn.net63.net/infinality-bundle/\$arch" | sudo tee -a /etc/pacman.conf 
-[[ `uname -m` == x86_64 ]] && echo "
-[infinality-bundle-multilib]
-Server = http://ibn.net63.net/infinality-bundle-multilib/\$arch" | sudo tee -a /etc/pacman.conf
-echo "
-[infinality-bundle-fonts]
-Server = http://ibn.net63.net/infinality-bundle-fonts" | sudo tee -a /etc/pacman.conf
-
-# set up font rendering
-sudo pacman-key -r 962DDE58
-sudo pacman-key --lsign-key 962DDE58
-sudo pacman -Syyu
-#package_remove freetype2-infinality fontconfig fontconfig-infinality cairo ttf-dejavu
-package_install infinality-bundle ibfonts-meta-extended
-[[ `uname -m` == x86_64 ]] && package_install infinality-bundle-multilib 
-fc-presets set
 
 # -------------------------------------------------- 
 # Common setup
@@ -146,9 +184,6 @@ fc-presets set
 # do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
 # https://wiki.archlinux.org/index.php/Systemd#Power_management
 #system_ctl enable upower
-
-# extra fonts
-package_install ttf-inconsolata ttf-win7-fonts
 
 # readahead - improve boot time
 # https://wiki.archlinux.org/index.php/Improve_Boot_Performance#Readahead
@@ -162,16 +197,6 @@ sudo systemctl enable zramswap
 # laptop touchpad driver
 # https://wiki.archlinux.org/index.php/Touchpad_Synaptics
 package_install xf86-input-synaptics
-
-# virtualbox shared folder mounting
-if lspci | grep -q VirtualBox
-then 
-  sudo mkdir /mnt/daryl
-  echo "
-# virtualbox shared folder
-daryl                                           /mnt/daryl      vboxsf          defaults,uid=`id -u`   0 0
-" | sudo tee -a /etc/fstab
-fi
 
 # enable auto-completion and "command not found"
 package_install bash-completion pkgfile
@@ -215,10 +240,10 @@ package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install wicd-kde                          # network manager (needed?)
 
 # configure startup of kde
-systemctl enable kdm
+sudo systemctl enable kdm
 
 # increase number of nepomuk watched files (from arch kde wiki page)
-echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.d/99-inotify.conf
+echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.d/99-inotify.conf
 
 # pulseaudio (was in aui script.  do i even use pulseaudio??)
 # https://wiki.archlinux.org/index.php/KDE#Sound_problems_under_KDE
@@ -245,61 +270,27 @@ package_install python-pandas # needs to be compiled
 package_install python-requests
 
 # need a web browser
-package_install google-chrome
+package_install google-chrome 
+
+# chrome font fix for bold fonts
+# https://bbs.archlinux.org/viewtopic.php?pid=1344172#p1344172
+mkdir -p /home/daryl/.config/fontconfig
+echo "<?xml version='1.0'?><!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<fontconfig>
+  <match target='pattern'>
+    <edit name='dpi' mode='assign'>
+      <double>72</double>
+    </edit>
+  </match>
+</fontconfig>
+" > /home/daryl/.config/fontconfig/fonts.conf
 
 # --------------------------------------------------
-# E17
+# Other software
 # -------------------------------------------------- 
 
-# install base E17 packages
-package_install enlightenment17                 # E17
-package_install gvfs                            # Gnome virtual filesystem
-package_install xdg-user-dirs                   # Common directories
-package_install leafpad epdfview                # Editor and PDF viewer
-package_install lxappearance                    # GTK theme switcher 
-package_install ttf-bitstream-vera ttf-dejavu   # Fonts
-package_install gnome-defaults-list             # Default file associations for gnome
+# vim
+package_install vim ctags
 
-# config xinitrc (can probably ignore if using kdm)
-#config_xinitrc "enlightenment_start"
-
-# network management
-# conflicts with openresolv, so raises an error...
-#package_install connman
-#systemctl enable connman
-
-# install and enable lxdm unless kdm is already installed
-pacman -Qs kdebase-workspace > dev/null || package_install lxdm
-pacman -Qs kdebase-workspace > dev/null || sudo systemctl enable lxdm
-
-# install miscellaneous apps
-package_install dmenu           # dynamic menu manager
-package_install viewnior        # image viewer
-package_install gmrun           # lightweight application runner
-package_install pcmanfm         # file manager
-package_install terminology     # terminal application
-package_install scrot           # screenshot tool
-package_install squeeze-git     # archive manager (install fails)
-package_install thunar tumbler  # file manager and thumbnail service
-package_install tint2           # system panel/taskbar
-package_install volwheel        # volume tray icon
-package_install xfburn          # cd/dvd burning tool
-package_install xcompmgr        # compositing window manager
-package_install transset-df     # enable transparency for xcompmgr
-package_install zathura         # document viewer
-
-# install icon themes
-package_install elementary-xfce-icons
-package_install moka-icon-theme-git
-
-# install gtk themes (clean up this list if i don't like them all - slow)
-package_install xfce-theme-greybird-git
-package_install gtk-theme-numix-git
-package_install gtk-theme-orion-git
-
-# install themes
-# https://wiki.archlinux.org/index.php/Enlightenment#Installing_themes
-wget http://exchange.enlightenment.org/theme/get/304 -O ~/.e/e/themes/simply-white.edj
-wget http://exchange.enlightenment.org/theme/get/294 -O ~/.e/e/themes/cerium.edj
-wget http://exchange.enlightenment.org/theme/get/274 -O ~/.e/e/themes/cthulhain.edj
-
+# git tools
+package_install git-cola yelp-tools giggle-git
