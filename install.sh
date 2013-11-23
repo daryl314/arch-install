@@ -122,18 +122,28 @@ arch_chroot "passwd daryl"
 # install sudo
 pacstrap /mnt sudo
 
-# Uncomment to allow members of group wheel to execute any command
-sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /mnt/etc/sudoers
-
+# sudo configuration
 # This config is especially helpful for those using terminal multiplexers like screen, tmux, or ratpoison, and those using sudo from scripts/cronjobs:
-echo "
+# https://wiki.archlinux.org/index.php/sudo#File_example
+echo '
+Cmnd_Alias WHEELER = /usr/bin/lsof, /bin/nice, /bin/ps, /usr/bin/top, /usr/local/bin/nano, /usr/bin/ss, /usr/bin/locate, /usr/bin/find, /usr/bin/rsync
+Cmnd_Alias PROCESSES = /bin/nice, /bin/kill, /usr/bin/nice, /usr/bin/ionice, /usr/bin/top, /usr/bin/kill, /usr/bin/killall, /usr/bin/ps, /usr/bin/pkill
+Cmnd_Alias EDITS = /usr/bin/vim, /usr/bin/nano, /usr/bin/cat, /usr/bin/vi
+Cmnd_Alias ARCHLINUX = /usr/bin/gparted, /usr/bin/pacman
+
+root ALL = (ALL) ALL
+%wheel ALL = (ALL) ALL, NOPASSWD: WHEELER, NOPASSWD: PROCESSES, NOPASSWD: ARCHLINUX, NOPASSWD: EDITS
+ 
 Defaults !requiretty, !tty_tickets, !umask
 Defaults visiblepw, path_info, insults, lecture=always
-Defaults loglinelen=0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
-Defaults passwd_tries=3, passwd_timeout=1
+Defaults loglinelen = 0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
+#Defaults mailto=webmaster@foobar.com, mail_badpass, mail_no_user, mail_no_perms
+Defaults passwd_tries = 8, passwd_timeout = 1
 Defaults env_reset, always_set_home, set_home, set_logname
-Defaults timestamp_timeout=300
-" >> /mnt/etc/sudoers
+Defaults !env_editor, editor="/usr/bin/vim:/usr/bin/vi:/usr/bin/nano"
+Defaults timestamp_timeout=360
+Defaults passprompt="Sudo invoked by [%u] on [%H] - Cmd run as %U - Password for user %p:"
+' > /mnt/etc/sudoers
 
 # Root bashrc
 echo "#
