@@ -299,3 +299,7 @@ package_install git-cola yelp-tools giggle-git
 # tmux
 # https://wiki.archlinux.org/index.php/Tmux
 package_install tmux xclip
+
+# install 'locate' command and perform initial scan (will be updated automatically in future)
+package_install mlocate
+sudo updatedb
