@@ -69,6 +69,7 @@ fi
 if lspci | grep -q VirtualBox
 then 
   sudo mkdir /mnt/daryl
+  sudo mount -t vboxsf daryl /mnt/daryl
   echo "
 # virtualbox shared folder
 daryl                                           /mnt/daryl      vboxsf          defaults,uid=`id -u`   0 0
@@ -158,7 +159,6 @@ package_install openssh
 # Copy ssh keys from shared folder
 if lspci | grep -q VirtualBox
 then
-  sudo mount -t vboxsf daryl /mnt/daryl
   mkdir -p ~/.ssh
   sudo cp /mnt/daryl/Private/.ssh/id_rsa /home/daryl/.ssh/
   sudo cp /mnt/daryl/Private/.ssh/id_rsa.pub /home/daryl/.ssh/
@@ -290,7 +290,12 @@ echo "<?xml version='1.0'?><!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
 # -------------------------------------------------- 
 
 # vim
+# https://wiki.archlinux.org/index.php/Vim
 package_install vim ctags
 
 # git tools
 package_install git-cola yelp-tools giggle-git
+
+# tmux
+# https://wiki.archlinux.org/index.php/Tmux
+package_install tmux xclip
