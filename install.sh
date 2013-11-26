@@ -49,6 +49,10 @@ mkdir -p /mnt/home
 mount "$HOME" /mnt/home
 swapon "$SWAP"
 
+# Reduce portion of home partition reserved for root use to 1%
+# https://wiki.archlinux.org/index.php/Ext4#Remove_reserved_blocks
+tune2fs -m 1.0 "$HOME"
+
 # -------------------------------------------------- 
 # Set up pacman mirrors
 # -------------------------------------------------- 
