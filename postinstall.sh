@@ -291,7 +291,7 @@ echo "<?xml version='1.0'?><!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
 
 # vim
 # https://wiki.archlinux.org/index.php/Vim
-package_install vim ctags
+package_install gvim ctags
 
 # git tools
 package_install git-cola yelp-tools giggle-git
@@ -303,3 +303,7 @@ package_install tmux xclip
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
 sudo updatedb
+
+# ruby
+# https://wiki.archlinux.org/index.php/ruby
+package_install ruby
