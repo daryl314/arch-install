@@ -298,7 +298,7 @@ package_install git-cola yelp-tools giggle-git
 
 # tmux
 # https://wiki.archlinux.org/index.php/Tmux
-package_install tmux xclip
+package_install tmux xclip xtmuxinator
 
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
@@ -307,3 +307,8 @@ sudo updatedb
 # ruby
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
+
+# xmonad
+# https://wiki.archlinux.org/index.php/xmonad
+package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
+
