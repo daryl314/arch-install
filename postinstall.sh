@@ -274,6 +274,7 @@ package_install google-chrome
 
 # chrome font fix for bold fonts
 # https://bbs.archlinux.org/viewtopic.php?pid=1344172#p1344172
+# should be incorporated into dotfiles repository now
 mkdir -p /home/daryl/.config/fontconfig
 echo "<?xml version='1.0'?><!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
 <fontconfig>
@@ -312,3 +313,7 @@ package_install ruby
 # https://wiki.archlinux.org/index.php/xmonad
 package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
 
+# ecryptfs
+# https://wiki.archlinux.org/index.php/ECryptfs
+package_install ecryptfs-utils
+sudo modprobe ecryptfs
