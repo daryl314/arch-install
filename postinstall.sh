@@ -202,6 +202,27 @@ package_install xf86-input-synaptics
 package_install bash-completion pkgfile
 sudo pkgfile --update
 
+# make server mountpoints
+sudo mkdir -p /mnt/server
+sudo mkdir -p /mnt/server-local
+sudo chown daryl /mnt/*
+sudo chgrp users /mnt/*
+
+# add network hosts
+if ! grep -q server /etc/hosts;
+then echo "
+# additional network hosts
+192.168.254.1   router
+192.168.254.20  server
+192.168.254.20  local.darylstlaurent.com 
+192.168.254.20  wiki.local.darylstlaurent.com 
+192.168.254.20  todo.local.darylstlaurent.com 
+192.168.254.20  gtd.local.darylstlaurent.com 
+
+# redirect www.kateanddaryl.com for testing
+# 192.168.254.20  www.kateanddaryl.com" | sudo tee -a  /etc/hosts
+fi
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
