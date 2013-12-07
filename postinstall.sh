@@ -338,3 +338,18 @@ package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot 
 # https://wiki.archlinux.org/index.php/ECryptfs
 package_install ecryptfs-utils
 sudo modprobe ecryptfs
+
+# LibreOffice
+# https://wiki.archlinux.org/index.php/LibreOffice
+#   * libreoffice base - need writer to use forms
+#   * testing odbc: isql -v MySQL-climbing root
+#   * mariadb-jdbc gives classpath errors.  may need different com.mysql.jdbc.driver string
+package_install libreoffice-common libreoffice-kde4 libreoffice-en-US hunspell-en hyphen-en
+package_install libreoffice-base hsqldb2-java
+package_install unixodbc myodbc mysql-jdbc
+sudo systemctl enable mysqld
+
+# rebuild climbing database
+pushd ~/Documents/Climbing/Sends/backups/
+mysql -u root < `ls -t *.sql | head -n1`
+popd 
