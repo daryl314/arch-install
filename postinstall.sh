@@ -353,3 +353,10 @@ sudo systemctl enable mysqld
 pushd ~/Documents/Climbing/Sends/backups/
 mysql -u root < `ls -t *.sql | head -n1`
 popd 
+
+# markdown to html
+package_install markdown elinks
+
+# sshfs
+# https://wiki.archlinux.org/index.php/sshfs
+package_install sshfs
