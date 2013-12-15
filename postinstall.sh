@@ -259,6 +259,8 @@ package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
 package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install wicd-kde                          # network manager (needed?)
+package_install kcmsystemd                        # system settings: systemd management
+package_install kdiff3                            # file diff viewer
 
 # configure startup of kde
 sudo systemctl enable kdm
@@ -289,6 +291,9 @@ package_install python-pandas # needs to be compiled
 
 # additional python packages
 package_install python-requests
+
+# octave and some additional packages
+package_install octave octave-image octave-statistics octave-io
 
 # need a web browser
 package_install google-chrome 
@@ -360,3 +365,20 @@ package_install markdown elinks
 # sshfs
 # https://wiki.archlinux.org/index.php/sshfs
 package_install sshfs
+
+# backup utilities
+package_install rsync rsnapshot rdiff-backup
+
+# package management
+package_install octopi
+
+# wine/PlayOnLinux
+# https://wiki.archlinux.org/index.php/wine
+package_install playonlinux wine-mono wine_gecko samba libxml2
+
+# VLC
+# https://wiki.archlinux.org/index.php/VLC_media_player
+package_install vlc
+
+# calibre
+package_install calibre
