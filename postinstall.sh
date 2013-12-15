@@ -80,26 +80,6 @@ fi
 # Graphics setup
 # -------------------------------------------------- 
 
-# add font rendering repositories
-# https://wiki.archlinux.org/index.php/Infinality-bundle%2Bfonts
-echo "
-[infinality-bundle]
-Server = http://ibn.net63.net/infinality-bundle/\$arch" | sudo tee -a /etc/pacman.conf 
-[[ `uname -m` == x86_64 ]] && echo "
-[infinality-bundle-multilib]
-Server = http://ibn.net63.net/infinality-bundle-multilib/\$arch" | sudo tee -a /etc/pacman.conf
-echo "
-[infinality-bundle-fonts]
-Server = http://ibn.net63.net/infinality-bundle-fonts" | sudo tee -a /etc/pacman.conf
-
-# set up font rendering
-# needs to be before xorg to avoid conflicts
-sudo pacman-key -r 962DDE58
-sudo pacman-key --lsign-key 962DDE58
-sudo pacman -Syyu
-package_install infinality-bundle ibfonts-meta-extended
-[[ `uname -m` == x86_64 ]] && package_install infinality-bundle-multilib 
-
 # install the base Xorg packages:
 package_install xorg-server xorg-server-utils xorg-xinit
 
@@ -115,6 +95,8 @@ then
 fi
 
 # extra fonts
+# https://wiki.archlinux.org/index.php/Font_Configuration
+# NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
 package_install t1-inconsolata-zi4-ibx
 
 # windows 7 fonts
