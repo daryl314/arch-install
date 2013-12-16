@@ -46,6 +46,10 @@ package_remove() {
   yaourt -Rcsn --noconfirm $@
 }
 
+# install powerpill to speed up downloads (and configure yaourt to use it)
+package_install powerpill
+echo 'PACMAN="powerpill"' | sudo tee -a /etc/yaourtrc
+
 # -------------------------------------------------- 
 # Virtualbox guest additions setup
 # --------------------------------------------------
@@ -277,23 +281,6 @@ package_install python-requests
 # octave and some additional packages
 package_install octave octave-image octave-statistics octave-io
 
-# need a web browser
-package_install google-chrome 
-
-# chrome font fix for bold fonts
-# https://bbs.archlinux.org/viewtopic.php?pid=1344172#p1344172
-# should be incorporated into dotfiles repository now
-mkdir -p /home/daryl/.config/fontconfig
-echo "<?xml version='1.0'?><!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-<fontconfig>
-  <match target='pattern'>
-    <edit name='dpi' mode='assign'>
-      <double>72</double>
-    </edit>
-  </match>
-</fontconfig>
-" > /home/daryl/.config/fontconfig/fonts.conf
-
 # --------------------------------------------------
 # Other software
 # -------------------------------------------------- 
@@ -364,3 +351,7 @@ package_install vlc
 
 # calibre
 package_install calibre
+
+# web browsers
+package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
+
