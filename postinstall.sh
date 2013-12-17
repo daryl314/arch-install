@@ -49,6 +49,8 @@ package_remove() {
 # install powerpill to speed up downloads (and configure yaourt to use it)
 package_install powerpill
 echo 'PACMAN="powerpill"' | sudo tee -a /etc/yaourtrc
+sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+sudo reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
 
 # -------------------------------------------------- 
 # Virtualbox guest additions setup
@@ -355,3 +357,9 @@ package_install calibre
 # web browsers
 package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
 
+# picasa
+package_install dpkg
+sudo dpkg -i /home/daryl/Backups/Software/picasa_3.0.5744-02_i386.deb 
+sudo /bin/cp -r ~/.PlayOnLinux/wineprefix/Picasa38/drive_c/Program\ Files/Google/Picasa3/* /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/
+sudo /bin/cp ~/Backups/Software/wininet.dll.so /opt/google/picasa/3.0/wine/lib/wine/
+sudo chown daryl /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/* -R
