@@ -190,6 +190,9 @@ package_install xf86-input-synaptics
 package_install bash-completion pkgfile
 sudo pkgfile --update
 
+# help arch out with package installation stats
+package_install pkgstats
+
 # make server mountpoints
 sudo mkdir -p /mnt/server
 sudo mkdir -p /mnt/server-local
@@ -235,6 +238,9 @@ package_remove kdemultimedia-kscd kdemultimedia-juk kdebase-kwrite kdebase-konqu
 # switch from kopete to telepathy (new KDE default chat application)
 package_install kde-telepathy-meta
 package_remove kdenetwork-kopete
+
+# remove dragon (using vlc instead, which is installed later)
+package_remove kdemultimedia-dragonplayer
 
 # set up common directories (downloads, music, documents, etc)
 # https://wiki.archlinux.org/index.php/Xdg_user_directories
@@ -363,3 +369,6 @@ sudo dpkg -i /home/daryl/Backups/Software/picasa_3.0.5744-02_i386.deb
 sudo /bin/cp -r ~/.PlayOnLinux/wineprefix/Picasa38/drive_c/Program\ Files/Google/Picasa3/* /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/
 sudo /bin/cp ~/Backups/Software/wininet.dll.so /opt/google/picasa/3.0/wine/lib/wine/
 sudo chown daryl /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/* -R
+
+# mozilla thunderbird
+package_install thunderbird
