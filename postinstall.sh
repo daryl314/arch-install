@@ -103,7 +103,7 @@ fi
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
-package_install t1-inconsolata-zi4-ibx
+package_install ttf-inconsolata
 
 # windows 7 fonts
 sudo mkdir /usr/share/fonts/win7
