@@ -210,6 +210,12 @@ https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud da
 " | sudo tee -a /etc/fstab
 fi
 
+# change default behavior of function keys on apple keyboard
+echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode 
+echo options hid_apple fnmode=2 | sudo tee /etc/modprobe.d/hid_apple.conf
+sudo perl -pi -e 's/FILES=".*"/FILES="\/etc\/modprobe.d\/hid_apple.conf"/' /etc/mkinitcpio.conf 
+sudo mkinitcpio -p linux
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
