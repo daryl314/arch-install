@@ -200,7 +200,7 @@ sudo chown daryl /mnt/*
 sudo chgrp users /mnt/*
 
 # add network hosts
-if ! grep -q server /etc/hosts;
+if ! grep -q server /etc/hosts
 then echo "
 # additional network hosts
 192.168.254.1   router
@@ -212,6 +212,17 @@ then echo "
 
 # redirect www.kateanddaryl.com for testing
 # 192.168.254.20  www.kateanddaryl.com" | sudo tee -a  /etc/hosts
+fi
+
+# webdav setup
+package_install davfs2
+mkdir -p ~/owncloud
+sudo usermod -a -G network daryl
+if ! grep -q owncloud /etc/fstab
+then echo "
+# owncloud configuration
+https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud davfs user,noauto,uid=daryl,file_mode=600,dir_mode=700 0 1
+" | sudo tee -a /etc/fstab
 fi
 
 # --------------------------------------------------
@@ -272,6 +283,12 @@ mkdir -p ~/.compose-cache
 # common theming with gtk apps
 package_install kde-gtk-config
 package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
+
+# wallpaper links
+! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/CaledoniaWallpapers/* /usr/share/wallpapers/
+
+# enable autologin
+! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/kdmrc /usr/share/config/kdm/kdmrc
 
 # --------------------------------------------------
 # Math software
