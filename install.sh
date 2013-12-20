@@ -66,8 +66,10 @@ tune2fs -m 1.0 "$HOME"
 # Install base system
 # -------------------------------------------------- 
 
-# install packages (adding wget to fetch post-install scripts)
-pacstrap /mnt base wget
+# install packages
+#   - adding wget to fetch post-install scripts
+#   - adding os-prober to detect other installed operating systems
+pacstrap /mnt base wget os-prober
 
 # generate fstab (using > instead of >> to prevent duplicate entries)
 genfstab -U -p /mnt > /mnt/etc/fstab
@@ -110,6 +112,7 @@ arch_chroot "passwd"
 # install bootloader
 pacstrap /mnt grub
 arch_chroot "grub-install --target=i386-pc --recheck ${DRIVE}"
+arch_chroot "os-prober"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # -------------------------------------------------- 

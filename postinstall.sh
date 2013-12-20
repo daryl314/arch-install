@@ -92,30 +92,15 @@ package_install xorg-server xorg-server-utils xorg-xinit
 # install mesa for 3D support:
 package_install mesa
 
-# install basic vesa video driver
+# install video driver
 # see instructions for getting acceleration working:
 #   https://wiki.archlinux.org/index.php/Xorg#Driver_installation
-if ! lspci | grep -q VirtualBox
-then
-  package_install xf86-video-vesa
-fi
+! ( lspci | grep -q Virtualbox ) && package_install xf86-video-intel
 
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
 package_install ttf-inconsolata
-
-# windows 7 fonts
-sudo mkdir /usr/share/fonts/win7
-if lspci | grep -q VirtualBox 
-then 
-  sudo cp /mnt/daryl/Backups/Software/Windows\ Software/Windows\ 7\ Fonts/* /usr/share/fonts/win7
-else
-  sudo cp /home/daryl/Backups/Software/Windows\ Software/Windows\ 7\ Fonts/* /usr/share/fonts/win7
-fi
-sudo fc-cache -vf
-sudo mkfontscale
-sudo mkfontdir
 
 # -------------------------------------------------- 
 # Audio setup
@@ -319,7 +304,7 @@ package_install git-cola yelp-tools giggle-git
 
 # tmux
 # https://wiki.archlinux.org/index.php/Tmux
-package_install tmux xclip xtmuxinator
+package_install tmux xclip tmuxinator
 
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
@@ -338,17 +323,20 @@ package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot 
 package_install ecryptfs-utils
 sudo modprobe ecryptfs
 
+# web browsers
+package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
+
 # LibreOffice
 # https://wiki.archlinux.org/index.php/LibreOffice
 #   * libreoffice base - need writer to use forms
-#   * testing odbc: isql -v MySQL-climbing root
 #   * mariadb-jdbc gives classpath errors.  may need different com.mysql.jdbc.driver string
 package_install libreoffice-common libreoffice-kde4 libreoffice-en-US hunspell-en hyphen-en
 package_install libreoffice-base hsqldb2-java
-package_install unixodbc myodbc mysql-jdbc
+package_install mysql-jdbc
 sudo systemctl enable mysqld
 
 # rebuild climbing database
+sudo systemctl start mysqld
 pushd ~/Documents/Climbing/Sends/backups/
 mysql -u root < `ls -t *.sql | head -n1`
 popd 
@@ -377,12 +365,9 @@ package_install vlc
 # calibre
 package_install calibre
 
-# web browsers
-package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
-
 # picasa
 package_install dpkg
-sudo dpkg -i /home/daryl/Backups/Software/picasa_3.0.5744-02_i386.deb 
+sudo dpkg -i /home/daryl/Backups/Software/picasa_3.0.5744-02_i386.deb || true # prevent error code from stopping script
 sudo /bin/cp -r ~/.PlayOnLinux/wineprefix/Picasa38/drive_c/Program\ Files/Google/Picasa3/* /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/
 sudo /bin/cp ~/Backups/Software/wininet.dll.so /opt/google/picasa/3.0/wine/lib/wine/
 sudo chown daryl /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/* -R
