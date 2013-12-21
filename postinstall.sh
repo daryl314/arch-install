@@ -222,6 +222,10 @@ sudo mkinitcpio -p linux
 sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf 
 sudo systemctl restart systemd-logind
 
+# time synchronization
+package_install ntp
+sudo timedatectl set-ntp 1
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
@@ -391,3 +395,22 @@ sudo chown daryl /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picas
 
 # mozilla thunderbird
 package_install thunderbird
+
+# crashplan
+package_install crashplan
+sudo systemctl enable crashplan.service
+sudo systemctl start crashplan.service
+
+# virtualbox
+# https://wiki.archlinux.org/index.php/VirtualBox
+package_install virtualbox virtualbox-ext-oracle virtualbox-host-modules
+echo "# virtualbox kernel modules
+vboxdrv
+vboxnetadp
+vboxnetflt
+vboxpci" | sudo tee /etc/modules-load.d/virtualbox.conf
+sudo gpasswd -a daryl vboxusers
+sudo modprobe vboxdrv 
+sudo modprobe vboxnetadp 
+sudo modprobe vboxnetflt 
+sudo modprobe vboxpci
