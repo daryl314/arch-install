@@ -211,10 +211,16 @@ https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud da
 fi
 
 # change default behavior of function keys on apple keyboard
+# https://wiki.archlinux.org/index.php/Apple_Keyboard
 echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode 
 echo options hid_apple fnmode=2 | sudo tee /etc/modprobe.d/hid_apple.conf
 sudo perl -pi -e 's/FILES=".*"/FILES="\/etc\/modprobe.d\/hid_apple.conf"/' /etc/mkinitcpio.conf 
 sudo mkinitcpio -p linux
+
+# ignore lid events
+# https://wiki.archlinux.org/index.php/Power_Management
+sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf 
+sudo systemctl restart systemd-logind
 
 # --------------------------------------------------
 # KDE
@@ -260,6 +266,11 @@ package_install kdiff3                            # file diff viewer
 
 # configure startup of kde
 sudo systemctl enable kdm
+
+# start wicd service
+sudo systemctl enable wicd
+sudo systemctl start wicd
+sudo ln -fs ~/dotfiles/wicd/* /etc/wicd/
 
 # increase number of nepomuk watched files (from arch kde wiki page)
 echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.d/99-inotify.conf
