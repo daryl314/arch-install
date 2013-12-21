@@ -226,6 +226,10 @@ sudo systemctl restart systemd-logind
 package_install ntp
 sudo timedatectl set-ntp 1
 
+# prevent excessive laptop hard drive spindown
+# https://wiki.archlinux.org/index.php/Laptop#Hard_drive_spin_down_problem
+echo 'ACTION=="add", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 254 /dev/$kernel"' | sudo tee /etc/udev/rules.d/75-hdparm.rules
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
@@ -334,6 +338,7 @@ sudo updatedb
 # ruby
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
+package_install ruby-rest-client
 
 # xmonad
 # https://wiki.archlinux.org/index.php/xmonad
@@ -414,3 +419,7 @@ sudo modprobe vboxdrv
 sudo modprobe vboxnetadp 
 sudo modprobe vboxnetflt 
 sudo modprobe vboxpci
+
+# dropbox
+# https://wiki.archlinux.org/index.php/dropbox
+package_install dropbox
