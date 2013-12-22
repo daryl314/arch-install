@@ -425,3 +425,7 @@ sudo modprobe vboxpci
 # dropbox
 # https://wiki.archlinux.org/index.php/dropbox
 package_install dropbox
+
+# conky
+# https://wiki.archlinux.org/index.php/conky
+package_install conky
