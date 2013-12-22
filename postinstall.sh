@@ -270,7 +270,8 @@ package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install wicd-kde                          # network manager (needed?)
 package_install kcmsystemd                        # system settings: systemd management
-package_install kdiff3                            # file diff viewer
+package_install kdiff3                            # file diff viewers
+package_install yapan                             # update notifier
 
 # configure startup of kde
 sudo systemctl enable kdm
@@ -339,6 +340,7 @@ sudo updatedb
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
 package_install ruby-rest-client
+package_install ruby-sequel ruby-mysql2
 
 # xmonad
 # https://wiki.archlinux.org/index.php/xmonad
