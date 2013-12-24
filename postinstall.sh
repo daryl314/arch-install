@@ -97,6 +97,16 @@ package_install mesa
 #   https://wiki.archlinux.org/index.php/Xorg#Driver_installation
 ! ( lspci | grep -q Virtualbox ) && package_install xf86-video-intel
 
+# add intel initramfs settings
+# https://wiki.archlinux.org/index.php/Intel_Graphics#Blank_screen_during_boot.2C_when_.22Loading_modules.22
+sudo perl -pi -e 's/MODULES=".*"/MODULES="i915 intel_agp"/' /etc/mkinitcpio.conf 
+sudo mkinitcpio -p linux
+
+# kernel mode settings (KMS) for external monitor during boot
+# https://wiki.archlinux.org/index.php/Kernel_Mode_Setting#Forcing_modes_and_EDID
+sudo perl -pi -e 's/(GRUB_CMDLINE_LINUX_DEFAULT)=".*"/$1="verbose LVDS-1:d VGA-1:1920x1080@60"/' /etc/default/grub
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
@@ -429,3 +439,6 @@ package_install dropbox
 # conky
 # https://wiki.archlinux.org/index.php/conky
 package_install conky
+
+# gparted
+package_install gparted dosfstools
