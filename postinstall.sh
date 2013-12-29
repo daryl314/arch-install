@@ -436,6 +436,12 @@ sudo modprobe vboxpci
 # dropbox
 # https://wiki.archlinux.org/index.php/dropbox
 package_install dropbox
+echo "#!/usr/bin/env bash
+su -c 'DISPLAY=:0 /usr/bin/dbus-launch dropboxd &' daryl" | sudo tee /etc/wicd/scripts/postconnect/dropbox
+echo "#!/usr/bin/env bash
+killall dropbox" | sudo tee /etc/wicd/scripts/postdisconnect/dropbox
+sudo chmod +x /etc/wicd/scripts/postconnect/dropbox
+sudo chmod +x /etc/wicd/scripts/postdisconnect/dropbox
 
 # conky
 # https://wiki.archlinux.org/index.php/conky
