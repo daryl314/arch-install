@@ -104,8 +104,9 @@ sudo mkinitcpio -p linux
 
 # kernel mode settings (KMS) for external monitor during boot
 # https://wiki.archlinux.org/index.php/Kernel_Mode_Setting#Forcing_modes_and_EDID
-sudo perl -pi -e 's/(GRUB_CMDLINE_LINUX_DEFAULT)=".*"/$1="verbose LVDS-1:d VGA-1:1920x1080@60"/' /etc/default/grub
+sudo perl -pi -e 's/(GRUB_CMDLINE_LINUX_DEFAULT)=".*"/$1="verbose VGA-1:1920x1080\@60.0"/' /etc/default/grub
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+echo "xrandr --output VGA1 --mode 1920x1080" | sudo tee -a /usr/share/config/kdm/Xsetup
 
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
@@ -442,3 +443,13 @@ package_install conky
 
 # gparted
 package_install gparted dosfstools
+
+# vmware viewer
+package_install vmware-view-client
+
+# FTP server
+package_install vsftpd
+sudo perl -pi -e 's/anonymous_enable=.*/anonymous_enable=NO/' /etc/vsftpd.conf 
+sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf 
+sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf 
+sudo systemctl enable vsftpd.service
