@@ -347,6 +347,9 @@ package_install tmux xclip tmuxinator
 package_install mlocate
 sudo updatedb
 
+# htop - advanced process monitor
+package_install htop lsof strace
+
 # ruby
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
@@ -452,6 +455,9 @@ package_install gparted dosfstools
 
 # vmware viewer
 package_install vmware-view-client
+
+# splashtop streamer
+package_install splashtop-streamer
 
 # FTP server
 package_install vsftpd
