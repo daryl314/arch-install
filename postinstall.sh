@@ -438,8 +438,12 @@ sudo modprobe vboxpci
 
 # dropbox
 # https://wiki.archlinux.org/index.php/dropbox
+# NOTE: for some reason the default doesn't work to start dropbox after a reboot.
+# I checked the "start on startup" box in the dropbox settings and added the 
+# killall line to the postconnect script to avoid duplicates
 package_install dropbox
 echo "#!/usr/bin/env bash
+killall dropbox
 su -c 'DISPLAY=:0 /usr/bin/dbus-launch dropboxd &' daryl" | sudo tee /etc/wicd/scripts/postconnect/dropbox
 echo "#!/usr/bin/env bash
 killall dropbox" | sudo tee /etc/wicd/scripts/postdisconnect/dropbox
