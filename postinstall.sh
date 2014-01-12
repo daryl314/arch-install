@@ -241,6 +241,13 @@ sudo timedatectl set-ntp 1
 # https://wiki.archlinux.org/index.php/Laptop#Hard_drive_spin_down_problem
 echo 'ACTION=="add", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 254 /dev/$kernel"' | sudo tee /etc/udev/rules.d/75-hdparm.rules
 
+# install 'locate' command and perform initial scan (will be updated automatically in future)
+package_install mlocate
+sudo updatedb
+
+# htop - advanced process monitor
+package_install htop lsof strace
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
@@ -283,6 +290,7 @@ package_install wicd-kde                          # network manager (needed?)
 package_install kcmsystemd                        # system settings: systemd management
 package_install kdiff3                            # file diff viewers
 package_install yapan                             # update notifier
+package_install avidemux-qt                       # video editor
 
 # configure startup of kde
 sudo systemctl enable kdm
@@ -329,7 +337,7 @@ package_install python-requests
 package_install octave octave-image octave-statistics octave-io
 
 # --------------------------------------------------
-# Other software
+# Programming tools
 # -------------------------------------------------- 
 
 # vim
@@ -343,27 +351,55 @@ package_install git-cola yelp-tools giggle-git
 # https://wiki.archlinux.org/index.php/Tmux
 package_install tmux xclip tmuxinator
 
-# install 'locate' command and perform initial scan (will be updated automatically in future)
-package_install mlocate
-sudo updatedb
-
-# htop - advanced process monitor
-package_install htop lsof strace
-
 # ruby
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
 package_install ruby-rest-client
 package_install ruby-sequel ruby-mysql2
 
-# xmonad
-# https://wiki.archlinux.org/index.php/xmonad
-package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
+# markdown to html
+package_install markdown elinks
+
+# --------------------------------------------------
+# System tools
+# -------------------------------------------------- 
 
 # ecryptfs
 # https://wiki.archlinux.org/index.php/ECryptfs
 package_install ecryptfs-utils
 sudo modprobe ecryptfs
+
+# sshfs
+# https://wiki.archlinux.org/index.php/sshfs
+package_install sshfs
+
+# backup utilities
+package_install rsync rsnapshot rdiff-backup
+
+# package management
+package_install octopi
+
+# conky
+# https://wiki.archlinux.org/index.php/conky
+package_install conky
+
+# gparted
+package_install gparted dosfstools
+
+# xmonad
+# https://wiki.archlinux.org/index.php/xmonad
+package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
+
+# FTP server
+package_install vsftpd
+sudo perl -pi -e 's/anonymous_enable=.*/anonymous_enable=NO/' /etc/vsftpd.conf 
+sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf 
+sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf 
+sudo systemctl enable vsftpd.service
+
+# --------------------------------------------------
+# Other applications
+# -------------------------------------------------- 
 
 # web browsers
 package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
@@ -383,18 +419,9 @@ pushd ~/Documents/Climbing/Sends/backups/
 mysql -u root < `ls -t *.sql | head -n1`
 popd 
 
-# markdown to html
-package_install markdown elinks
-
-# sshfs
-# https://wiki.archlinux.org/index.php/sshfs
-package_install sshfs
-
-# backup utilities
-package_install rsync rsnapshot rdiff-backup
-
-# package management
-package_install octopi
+# pipelight (installing before PlayOnLinux to use custom wine build)
+# NOTE: This needs to be installed without having Firefox open!
+package_install pipelight
 
 # wine/PlayOnLinux
 # https://wiki.archlinux.org/index.php/wine
@@ -450,22 +477,12 @@ killall dropbox" | sudo tee /etc/wicd/scripts/postdisconnect/dropbox
 sudo chmod +x /etc/wicd/scripts/postconnect/dropbox
 sudo chmod +x /etc/wicd/scripts/postdisconnect/dropbox
 
-# conky
-# https://wiki.archlinux.org/index.php/conky
-package_install conky
-
-# gparted
-package_install gparted dosfstools
-
 # vmware viewer
 package_install vmware-view-client
 
 # splashtop streamer
 package_install splashtop-streamer
 
-# FTP server
-package_install vsftpd
-sudo perl -pi -e 's/anonymous_enable=.*/anonymous_enable=NO/' /etc/vsftpd.conf 
-sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf 
-sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf 
-sudo systemctl enable vsftpd.service
+# --------------------------------------------------
+# Games
+# -------------------------------------------------- 
