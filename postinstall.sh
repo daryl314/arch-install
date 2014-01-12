@@ -397,6 +397,9 @@ sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf
 sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf 
 sudo systemctl enable vsftpd.service
 
+# colorize diff output
+package_install colordiff
+
 # --------------------------------------------------
 # Other applications
 # -------------------------------------------------- 
