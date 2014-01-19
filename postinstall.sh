@@ -404,6 +404,13 @@ package_install colordiff
 # https://wiki.archlinux.org/index.php/S.M.A.R.T.
 package_install smartmontools gsmartcontrol
 
+# Power management
+# https://wiki.archlinux.org/index.php/Power_saving
+# https://wiki.archlinux.org/index.php/TLP
+package_install tlp
+sudo systemctl enable tlp
+sudo systemctl enable tlp-sleep.service
+
 # --------------------------------------------------
 # Other applications
 # -------------------------------------------------- 
