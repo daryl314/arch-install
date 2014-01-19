@@ -400,6 +400,10 @@ sudo systemctl enable vsftpd.service
 # colorize diff output
 package_install colordiff
 
+# S.M.A.R.T. hard drive diagnostics
+# https://wiki.archlinux.org/index.php/S.M.A.R.T.
+package_install smartmontools gsmartcontrol
+
 # --------------------------------------------------
 # Other applications
 # -------------------------------------------------- 
