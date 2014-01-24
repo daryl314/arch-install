@@ -358,7 +358,7 @@ package_install ruby-rest-client
 package_install ruby-sequel ruby-mysql2
 
 # markdown to html
-package_install markdown elinks
+package_install markdown python-markdown elinks
 
 # --------------------------------------------------
 # System tools
