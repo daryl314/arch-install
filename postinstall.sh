@@ -291,6 +291,7 @@ package_install kcmsystemd                        # system settings: systemd man
 package_install kdiff3                            # file diff viewers
 package_install yapan                             # update notifier
 package_install avidemux-qt                       # video editor
+package_install ksuperkey                         # allow binding to meta key
 
 # configure startup of kde
 sudo systemctl enable kdm
