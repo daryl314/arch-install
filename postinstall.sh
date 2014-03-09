@@ -255,26 +255,18 @@ package_install htop lsof strace
 # install dependencies (kde devs suggest gstreamer over vlc)
 package_install phonon-gstreamer mesa-libgl ttf-bitstream-vera
 
-# install kde excluding the initial 'kde ' from each line and removing selected packages from list
+# install kde using meta packages to facilitate upgrades
 # list of all packages w/ descriptions: https://www.archlinux.org/groups/x86_64/kde/
-package_install `pacman -Sg kde | \
-  cut -c 5- | \
+# remove group name from each line
+# remove selected meta-packages from list
+package_install `pacman -Sg kde-meta | \
+  sed 's/kde-meta //' | \
   grep -v \
-    -e ^kdeaccessibility \
-    -e ^kdeedu \
-    -e ^kdegames \
-    -e ^kdepim \
-    -e ^kdetoys`
-
-# remove some packages from base install
-package_remove kdemultimedia-kscd kdemultimedia-juk kdebase-kwrite kdebase-konqueror
-
-# switch from kopete to telepathy (new KDE default chat application)
-package_install kde-telepathy-meta
-package_remove kdenetwork-kopete
-
-# remove dragon (using vlc instead, which is installed later)
-package_remove kdemultimedia-dragonplayer
+    -e ^kde-meta-kdeaccessibility \
+    -e ^kde-meta-kdeedu \
+    -e ^kde-meta-kdegames \
+    -e ^kde-meta-kdepim \
+    -e ^kde-meta-kdetoys`
 
 # set up common directories (downloads, music, documents, etc)
 # https://wiki.archlinux.org/index.php/Xdg_user_directories
@@ -282,6 +274,7 @@ package_remove kdemultimedia-dragonplayer
 package_install xdg-user-dirs
 
 # install additional packages
+package_install kde-telepathy-meta                # chat program (use instead of kopete)
 package_install digikam kipi-plugins              # kde photo manager
 package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
 package_install yakuake                           # dropdown terminal
@@ -424,7 +417,7 @@ package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
 #   * libreoffice base - need writer to use forms
 #   * mariadb-jdbc gives classpath errors.  may need different com.mysql.jdbc.driver string
 package_install libreoffice-common libreoffice-kde4 libreoffice-en-US hunspell-en hyphen-en
-package_install libreoffice-base hsqldb2-java
+package_install libreoffice-base hsqldb2-java libreoffice-writer
 package_install mysql-jdbc
 sudo systemctl enable mysqld
 
