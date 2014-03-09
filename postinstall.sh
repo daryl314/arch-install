@@ -427,6 +427,9 @@ pushd ~/Documents/Climbing/Sends/backups/
 mysql -u root < `ls -t *.sql | head -n1`
 popd 
 
+# coffeescript
+package_install coffee-script
+
 # pipelight (installing before PlayOnLinux to use custom wine build)
 # NOTE: This needs to be installed without having Firefox open!
 package_install pipelight
