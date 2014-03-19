@@ -363,6 +363,10 @@ package_install markdown python-markdown elinks
 package_install ecryptfs-utils
 sudo modprobe ecryptfs
 
+# encfs
+# https://wiki.archlinux.org/index.php/EncFS
+package_install encfs
+
 # sshfs
 # https://wiki.archlinux.org/index.php/sshfs
 package_install sshfs
