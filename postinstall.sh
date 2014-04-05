@@ -189,6 +189,13 @@ sudo pkgfile --update
 # help arch out with package installation stats
 package_install pkgstats
 
+# configure cron
+# https://wiki.archlinux.org/index.php/cron
+# crontab located at /var/spool/cron/daryl
+sudo systemctl start cronie
+sudo systemctl enable cronie
+! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/bin/wiki_sync /etc/cron.hourly/
+
 # make server mountpoints
 sudo mkdir -p /mnt/server
 sudo mkdir -p /mnt/server-local
