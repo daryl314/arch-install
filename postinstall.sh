@@ -255,6 +255,9 @@ sudo updatedb
 # htop - advanced process monitor
 package_install htop lsof strace
 
+# ncdu - console-based interactive du (like filelight)
+package_install ncdu
+
 # --------------------------------------------------
 # KDE
 # -------------------------------------------------- 
