@@ -7,6 +7,12 @@ set -ex
 # Package management
 # --------------------------------------------------
 
+# enable multilib
+grep '^\[multilib\]' /etc/pacman.conf && echo "
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+" | sudo tee -a /etc/pacman.conf
+
 # upgrade packages
 sudo pacman -Syu --noconfirm
 
