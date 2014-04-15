@@ -355,7 +355,7 @@ package_install octave octave-image octave-statistics octave-io
 package_install gvim ctags
 
 # git tools
-package_install git-cola yelp-tools giggle-git
+package_install git-cola yelp-tools giggle
 
 # tmux
 # https://wiki.archlinux.org/index.php/Tmux
@@ -452,7 +452,7 @@ package_install coffee-script
 
 # pipelight (installing before PlayOnLinux to use custom wine build)
 # NOTE: This needs to be installed without having Firefox open!
-package_install pipelight
+package_install pipelight wine-silverlight
 
 # wine/PlayOnLinux
 # https://wiki.archlinux.org/index.php/wine
