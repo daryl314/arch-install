@@ -514,6 +514,15 @@ package_install vmware-view-client
 # splashtop streamer
 package_install splashtop-streamer
 
+# geeknote (AUR package currently broken)
+#package_install geeknote-git
+package_install python2-setuptools
+pushd /tmp
+git clone git://github.com/VitaliyRodnenko/geeknote.git
+cd geeknote/
+sudo python2 setup.py install
+popd
+
 # --------------------------------------------------
 # Games
 # -------------------------------------------------- 
