@@ -366,6 +366,8 @@ package_install tmux xclip tmuxinator
 package_install ruby
 package_install ruby-rest-client
 package_install ruby-sequel ruby-mysql2
+package_install ruby-pry
+gem install evernote-thrift # for Evernote backup script
 
 # markdown to html
 package_install markdown python-markdown elinks
@@ -513,6 +515,9 @@ package_install vmware-view-client
 
 # splashtop streamer
 package_install splashtop-streamer
+
+# nixnote (evernote client)
+package_install nixnote
 
 # geeknote (AUR package currently broken)
 #package_install geeknote-git
