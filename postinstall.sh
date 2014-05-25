@@ -454,6 +454,11 @@ package_install coffee-script
 
 # pipelight (installing before PlayOnLinux to use custom wine build)
 # NOTE: This needs to be installed without having Firefox open!
+killall firefox
+sudo pacman-key -r E49CC0415DC2D5CA
+echo "
+[pipelight]
+Server = http://repos.fds-team.de/stable/arch/$arch" | sudo tee -a /etc/pacman.conf
 package_install pipelight wine-silverlight
 
 # wine/PlayOnLinux
