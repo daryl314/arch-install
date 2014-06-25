@@ -3,7 +3,7 @@
 # terminate script on errors (-ex for trace too)
 set -ex
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Package management
 # --------------------------------------------------
 
@@ -58,13 +58,13 @@ echo 'PACMAN="powerpill"' | sudo tee -a /etc/yaourtrc
 sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 sudo reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Virtualbox guest additions setup
 # --------------------------------------------------
 
 # setup is required for later sections
 
-# set up virtualbox guest additions 
+# set up virtualbox guest additions
 # https://wiki.archlinux.org/index.php/VirtualBox#Arch_Linux_as_a_guest_in_a_Virtual_Machine
 if lspci | grep -q VirtualBox
 then
@@ -79,7 +79,7 @@ fi
 
 # virtualbox shared folder mounting
 if lspci | grep -q VirtualBox
-then 
+then
   sudo mkdir /mnt/daryl
   sudo mount -t vboxsf daryl /mnt/daryl
   echo "
@@ -88,9 +88,9 @@ daryl                                           /mnt/daryl      vboxsf          
 " | sudo tee -a /etc/fstab
 fi
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Graphics setup
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # install the base Xorg packages:
 package_install xorg-server xorg-server-utils xorg-xinit
@@ -105,7 +105,7 @@ package_install mesa
 
 # add intel initramfs settings
 # https://wiki.archlinux.org/index.php/Intel_Graphics#Blank_screen_during_boot.2C_when_.22Loading_modules.22
-sudo perl -pi -e 's/MODULES=".*"/MODULES="i915 intel_agp"/' /etc/mkinitcpio.conf 
+sudo perl -pi -e 's/MODULES=".*"/MODULES="i915 intel_agp"/' /etc/mkinitcpio.conf
 sudo mkinitcpio -p linux
 
 # kernel mode settings (KMS) for external monitor during boot
@@ -119,9 +119,9 @@ echo "xrandr --output VGA1 --mode 1920x1080" | sudo tee -a /usr/share/config/kdm
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
 package_install ttf-inconsolata
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Audio setup
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # install alsa utilities and unmute sound channels
 package_install alsa-utils
@@ -129,11 +129,11 @@ amixer sset Master unmute
 
 # initialize sound system for virtualbox
 if lspci | grep -q VirtualBox
-then 
+then
   alsactl init || true # prevent error return code from stopping script
 fi
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Dotfile setup
 # --------------------------------------------------
 
@@ -165,7 +165,7 @@ then
   " > ~/pull_dotfiles.sh
 fi
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Common setup
 # --------------------------------------------------
 
@@ -214,10 +214,10 @@ then echo "
 # additional network hosts
 192.168.254.1   router
 192.168.254.20  server
-192.168.254.20  local.darylstlaurent.com 
-192.168.254.20  wiki.local.darylstlaurent.com 
-192.168.254.20  todo.local.darylstlaurent.com 
-192.168.254.20  gtd.local.darylstlaurent.com 
+192.168.254.20  local.darylstlaurent.com
+192.168.254.20  wiki.local.darylstlaurent.com
+192.168.254.20  todo.local.darylstlaurent.com
+192.168.254.20  gtd.local.darylstlaurent.com
 
 # redirect www.kateanddaryl.com for testing
 # 192.168.254.20  www.kateanddaryl.com" | sudo tee -a  /etc/hosts
@@ -236,14 +236,14 @@ fi
 
 # change default behavior of function keys on apple keyboard
 # https://wiki.archlinux.org/index.php/Apple_Keyboard
-echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode 
+echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
 echo options hid_apple fnmode=2 | sudo tee /etc/modprobe.d/hid_apple.conf
-sudo perl -pi -e 's/FILES=".*"/FILES="\/etc\/modprobe.d\/hid_apple.conf"/' /etc/mkinitcpio.conf 
+sudo perl -pi -e 's/FILES=".*"/FILES="\/etc\/modprobe.d\/hid_apple.conf"/' /etc/mkinitcpio.conf
 sudo mkinitcpio -p linux
 
 # ignore lid events
 # https://wiki.archlinux.org/index.php/Power_Management
-sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf 
+sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
 sudo systemctl restart systemd-logind
 
 # time synchronization
@@ -266,7 +266,7 @@ package_install ncdu
 
 # --------------------------------------------------
 # KDE
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # install dependencies (kde devs suggest gstreamer over vlc)
 package_install phonon-gstreamer mesa-libgl ttf-bitstream-vera
@@ -332,7 +332,7 @@ package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
 
 # --------------------------------------------------
 # Math software
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # install scipy stack
 package_install python-matplotlib python-numpy python-scipy python-sympy python-nose
@@ -348,7 +348,7 @@ package_install octave octave-image octave-statistics octave-io
 
 # --------------------------------------------------
 # Programming tools
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # vim
 # https://wiki.archlinux.org/index.php/Vim
@@ -366,15 +366,16 @@ package_install tmux xclip tmuxinator
 package_install ruby
 package_install ruby-rest-client
 package_install ruby-sequel ruby-mysql2
-package_install ruby-pry
-gem install evernote-thrift # for Evernote backup script
+gem install pry-rescue pry-nav           # debugging tools
+gem install pry-stack_explorer           # must be installed separately to avoid conflicts
+gem install evernote-thrift              # for Evernote backup script
 
 # markdown to html
 package_install markdown python-markdown elinks
 
 # --------------------------------------------------
 # System tools
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # ecryptfs
 # https://wiki.archlinux.org/index.php/ECryptfs
@@ -408,9 +409,9 @@ package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot 
 
 # FTP server
 package_install vsftpd
-sudo perl -pi -e 's/anonymous_enable=.*/anonymous_enable=NO/' /etc/vsftpd.conf 
-sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf 
-sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf 
+sudo perl -pi -e 's/anonymous_enable=.*/anonymous_enable=NO/' /etc/vsftpd.conf
+sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf
+sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf
 sudo systemctl enable vsftpd.service
 
 # colorize diff output
@@ -429,7 +430,7 @@ sudo systemctl enable tlp-sleep.service
 
 # --------------------------------------------------
 # Other applications
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # web browsers
 package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
@@ -447,7 +448,7 @@ sudo systemctl enable mysqld
 sudo systemctl start mysqld
 pushd ~/Documents/Climbing/Sends/backups/
 mysql -u root < `ls -t *.sql | head -n1`
-popd 
+popd
 
 # coffeescript
 package_install coffee-script
@@ -456,9 +457,10 @@ package_install coffee-script
 # NOTE: This needs to be installed without having Firefox open!
 killall firefox
 sudo pacman-key -r E49CC0415DC2D5CA
-echo "
+sudo pacman-key --lsign-key E49CC0415DC2D5CA
+echo '
 [pipelight]
-Server = http://repos.fds-team.de/stable/arch/$arch" | sudo tee -a /etc/pacman.conf
+Server = http://repos.fds-team.de/stable/arch/$arch' | sudo tee -a /etc/pacman.conf
 package_install pipelight wine-silverlight
 
 # wine/PlayOnLinux
@@ -496,15 +498,15 @@ vboxnetadp
 vboxnetflt
 vboxpci" | sudo tee /etc/modules-load.d/virtualbox.conf
 sudo gpasswd -a daryl vboxusers
-sudo modprobe vboxdrv 
-sudo modprobe vboxnetadp 
-sudo modprobe vboxnetflt 
+sudo modprobe vboxdrv
+sudo modprobe vboxnetadp
+sudo modprobe vboxnetflt
 sudo modprobe vboxpci
 
 # dropbox
 # https://wiki.archlinux.org/index.php/dropbox
 # NOTE: for some reason the default doesn't work to start dropbox after a reboot.
-# I checked the "start on startup" box in the dropbox settings and added the 
+# I checked the "start on startup" box in the dropbox settings and added the
 # killall line to the postconnect script to avoid duplicates
 package_install dropbox
 echo "#!/usr/bin/env bash
@@ -533,6 +535,11 @@ cd geeknote/
 sudo python2 setup.py install
 popd
 
+# verynice (runaway process helper)
+# https://wiki.archlinux.org/index.php/VeryNice
+package_install verynice
+sudo systemctl enable verynice.service
+
 # --------------------------------------------------
 # Games
-# -------------------------------------------------- 
+# --------------------------------------------------
