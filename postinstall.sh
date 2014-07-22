@@ -254,6 +254,14 @@ sudo timedatectl set-ntp 1
 # https://wiki.archlinux.org/index.php/Laptop#Hard_drive_spin_down_problem
 echo 'ACTION=="add", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 254 /dev/$kernel"' | sudo tee /etc/udev/rules.d/75-hdparm.rules
 
+# tune swap and cache usage
+# http://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
+# https://wiki.archlinux.org/index.php/Swap#Swappiness
+echo "#System booster
+vm.swappiness=1
+vm.vfs_cache_pressure=50
+" | sudo tee /etc/sysctl.d/99-sysctl.conf
+
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
 sudo updatedb
@@ -263,6 +271,9 @@ package_install htop lsof strace
 
 # ncdu - console-based interactive du (like filelight)
 package_install ncdu
+
+# iotop - top equivalent for I/O
+package_install iotop
 
 # --------------------------------------------------
 # KDE
@@ -428,6 +439,11 @@ package_install tlp
 sudo systemctl enable tlp
 sudo systemctl enable tlp-sleep.service
 
+# verynice (runaway process helper)
+# https://wiki.archlinux.org/index.php/VeryNice
+package_install verynice
+sudo systemctl enable verynice.service
+
 # --------------------------------------------------
 # Other applications
 # --------------------------------------------------
@@ -525,20 +541,6 @@ package_install splashtop-streamer
 
 # nixnote (evernote client)
 package_install nixnote
-
-# geeknote (AUR package currently broken)
-#package_install geeknote-git
-package_install python2-setuptools
-pushd /tmp
-git clone git://github.com/VitaliyRodnenko/geeknote.git
-cd geeknote/
-sudo python2 setup.py install
-popd
-
-# verynice (runaway process helper)
-# https://wiki.archlinux.org/index.php/VeryNice
-package_install verynice
-sudo systemctl enable verynice.service
 
 # --------------------------------------------------
 # Games
