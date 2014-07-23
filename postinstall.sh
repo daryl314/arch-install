@@ -490,12 +490,8 @@ package_install vlc
 # calibre
 package_install calibre
 
-# picasa
-package_install dpkg
-sudo dpkg -i /home/daryl/Backups/Software/picasa_3.0.5744-02_i386.deb || true # prevent error code from stopping script
-sudo /bin/cp -r ~/.PlayOnLinux/wineprefix/Picasa38/drive_c/Program\ Files/Google/Picasa3/* /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/
-sudo /bin/cp ~/Backups/Software/wininet.dll.so /opt/google/picasa/3.0/wine/lib/wine/
-sudo chown daryl /opt/google/picasa/3.0/wine/drive_c/Program\ Files/Google/Picasa3/* -R
+# shotwell
+package_install shotwell
 
 # mozilla thunderbird
 package_install thunderbird
