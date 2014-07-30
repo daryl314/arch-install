@@ -200,7 +200,13 @@ package_install pkgstats
 # crontab located at /var/spool/cron/daryl
 sudo systemctl start cronie
 sudo systemctl enable cronie
-! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/bin/wiki_sync /etc/cron.hourly/
+echo "\
+#Stop Crashplan service at 4PM on weekdays
+0 16 * * 1,2,3,4,5      root    systemctl stop crashplan.service
+
+#Start Crashplan service at 1AM on weekdays
+0 1 * * 1,2,3,4,5       root    systemctl start crashplan.service
+" | sudo tee /etc/crontab
 
 # make server mountpoints
 sudo mkdir -p /mnt/server
@@ -498,8 +504,6 @@ package_install thunderbird
 
 # crashplan
 package_install crashplan
-sudo systemctl enable crashplan.service
-sudo systemctl start crashplan.service
 
 # virtualbox
 # https://wiki.archlinux.org/index.php/VirtualBox
