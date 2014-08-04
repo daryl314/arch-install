@@ -268,6 +268,13 @@ vm.swappiness=1
 vm.vfs_cache_pressure=50
 " | sudo tee /etc/sysctl.d/99-sysctl.conf
 
+# install bluetooth stack
+# https://wiki.archlinux.org/index.php/bluetooth
+package_install bluez bluez-utils
+sudo modprobe btusb
+sudo systemctl start bluetooth
+sudo systemctl enable bluetooth
+
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
 sudo updatedb
@@ -318,6 +325,8 @@ package_install kdiff3                            # file diff viewers
 package_install yapan                             # update notifier
 package_install avidemux-qt                       # video editor
 package_install ksuperkey                         # allow binding to meta key
+package_install bluedevil                         # bluetooth control
+
 
 # configure startup of kde
 sudo systemctl enable kdm
