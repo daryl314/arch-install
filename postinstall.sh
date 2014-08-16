@@ -466,6 +466,9 @@ sudo systemctl enable verynice.service
 # web browsers
 package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
 
+# sqlite
+package_install sqlite sqliteman
+
 # LibreOffice
 # https://wiki.archlinux.org/index.php/LibreOffice
 #   * libreoffice base - need writer to use forms
