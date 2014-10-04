@@ -275,6 +275,19 @@ sudo modprobe btusb
 sudo systemctl start bluetooth
 sudo systemctl enable bluetooth
 
+# printer driver (print to pdf)
+# https://wiki.archlinux.org/index.php/CUPS#PDF_virtual_printer
+package_install cups-pdf               # install driver
+sudo groupadd printadmin               # create printer admin group
+sudo groupadd lp                       # create printing group
+sudo gpasswd -a daryl printadmin       # add to admin group
+sudo gpasswd -a daryl lp               # add to printing group
+sudo perl -pi -e 's/#?(^SystemGroup.*)/$1 printadmin/' /etc/cups/cups-files.conf
+sudo perl -pi -e 's/#?Out.*/Out \${HOME}/' /etc/cups/cups-pdf.conf
+sudo systemctl start cups.service      # start service
+sudo systemctl enable cups.service     # autostart service
+sudo lpadmin -p Virtual_PDF_Printer -D "Virtual PDF Printer" -v cups-pdf:/ -E -P /usr/share/cups/model/CUPS-PDF.ppd
+
 # install 'locate' command and perform initial scan (will be updated automatically in future)
 package_install mlocate
 sudo updatedb
