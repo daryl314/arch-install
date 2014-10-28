@@ -404,7 +404,6 @@ package_install tmux xclip tmuxinator
 # https://wiki.archlinux.org/index.php/ruby
 package_install ruby
 package_install ruby-rest-client
-package_install ruby-sequel ruby-mysql2
 gem install pry-rescue pry-nav           # debugging tools
 gem install pry-stack_explorer           # must be installed separately to avoid conflicts
 gem install evernote-thrift              # for Evernote backup script
@@ -481,21 +480,6 @@ package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
 
 # sqlite
 package_install sqlite sqliteman
-
-# LibreOffice
-# https://wiki.archlinux.org/index.php/LibreOffice
-#   * libreoffice base - need writer to use forms
-#   * mariadb-jdbc gives classpath errors.  may need different com.mysql.jdbc.driver string
-package_install libreoffice-common libreoffice-kde4 libreoffice-en-US hunspell-en hyphen-en
-package_install libreoffice-base hsqldb2-java libreoffice-writer
-package_install mysql-jdbc
-sudo systemctl enable mysqld
-
-# rebuild climbing database
-sudo systemctl start mysqld
-pushd ~/Documents/Climbing/Sends/backups/
-mysql -u root < `ls -t *.sql | head -n1`
-popd
 
 # coffeescript
 package_install coffee-script
