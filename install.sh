@@ -3,6 +3,14 @@
 # terminate script on errors (-ex for trace too)
 set -e
 
+# CONFIGURING A NEW INTEL NUC
+# - Update bios
+# - Increase video ram to 1Gb from BIOS
+# - Create GPT partition table on hard drive
+# - Create 512Mb fat32 partition with boot flag for UEFI
+# - Create 30Gb system partition
+# - Partition remaining space for /home
+
 # -------------------------------------------------- 
 # Settings
 # -------------------------------------------------- 
