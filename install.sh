@@ -48,7 +48,7 @@ BOOT_PART=`parted "$DRIVE" print | grep fat32 | tail -n 1 | cut -c 2`
 # prompt for root, home, and swap partitions
 read -e -p "Root partition: " -i "$DRIVE$ROOT_PART" ROOT
 read -e -p "Home partition: " -i "$DRIVE$HOME_PART" HOME
-read -e -p "Swap partition: " -i "$DRIVE$SWAP_PART" BOOT
+read -e -p "Boot partition: " -i "$DRIVE$BOOT_PART" BOOT
 
 # set up mounts
 echo -e "\nMounting / to $ROOT\nMounting /home to $HOME\nMounting /boot to $BOOT\n\n"
@@ -86,6 +86,7 @@ genfstab -U -p /mnt > /mnt/etc/fstab
 
 # add noatime to mount flags for SSD's
 # https://wiki.archlinux.org/index.php/Solid_State_Drives#noatime_mount_option
+perl -pi -e 's/relatime/noatime/' /mnt/etc/fstab
 
 # prompt user that this looks kosher
 echo ""
@@ -123,7 +124,7 @@ echo "===== Root password ====="
 arch_chroot "passwd"
 
 # install bootloader
-pacstrap /mnt grub
+pacstrap /mnt grub efibootmgr
 arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck" # for UEFI
 # arch_chroot "grub-install --target=i386-pc --recheck ${DRIVE}" (for BIOS)
 arch_chroot "os-prober"
@@ -193,5 +194,6 @@ wget -O /mnt/home/daryl/postinstall.sh https://gitlab.com/daryl314/arch/raw/mast
 # --------------------------------------------------
 
 umount /mnt/home
+umount /mnt/boot
 umount /mnt
 reboot

@@ -13,6 +13,9 @@ grep '^\[multilib\]' /etc/pacman.conf && echo "
 Include = /etc/pacman.d/mirrorlist
 " | sudo tee -a /etc/pacman.conf
 
+# use tmpfs for compiling
+sudo perl -pi -e 's/.*BUILDDIR.*/BUILDDIR=\/tmp\/builds/' /etc/makepkg.conf
+
 # upgrade packages
 sudo pacman -Syu --noconfirm
 
@@ -113,9 +116,9 @@ sudo mkinitcpio -p linux
 
 # kernel mode settings (KMS) for external monitor during boot
 # https://wiki.archlinux.org/index.php/Kernel_Mode_Setting#Forcing_modes_and_EDID
-sudo perl -pi -e 's/(GRUB_CMDLINE_LINUX_DEFAULT)=".*"/$1="verbose VGA-1:1920x1080\@60.0"/' /etc/default/grub
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-echo "xrandr --output VGA1 --mode 1920x1080" | sudo tee -a /usr/share/config/kdm/Xsetup
+#sudo perl -pi -e 's/(GRUB_CMDLINE_LINUX_DEFAULT)=".*"/$1="verbose VGA-1:1920x1080\@60.0"/' /etc/default/grub
+#sudo grub-mkconfig -o /boot/grub/grub.cfg
+#echo "xrandr --output VGA1 --mode 1920x1080" | sudo tee -a /usr/share/config/kdm/Xsetup
 
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
@@ -189,7 +192,7 @@ sudo systemctl enable zramswap
 
 # laptop touchpad driver
 # https://wiki.archlinux.org/index.php/Touchpad_Synaptics
-package_install xf86-input-synaptics
+#package_install xf86-input-synaptics
 
 # enable auto-completion and "command not found"
 package_install bash-completion pkgfile
@@ -252,8 +255,8 @@ sudo mkinitcpio -p linux
 
 # ignore lid events
 # https://wiki.archlinux.org/index.php/Power_Management
-sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
-sudo systemctl restart systemd-logind
+#sudo perl -pi -e 's/#?HandleLidSwitch.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
+#sudo systemctl restart systemd-logind
 
 # time synchronization
 package_install ntp
@@ -261,15 +264,15 @@ sudo timedatectl set-ntp 1
 
 # prevent excessive laptop hard drive spindown
 # https://wiki.archlinux.org/index.php/Laptop#Hard_drive_spin_down_problem
-echo 'ACTION=="add", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 254 /dev/$kernel"' | sudo tee /etc/udev/rules.d/75-hdparm.rules
+#echo 'ACTION=="add", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 254 /dev/$kernel"' | sudo tee /etc/udev/rules.d/75-hdparm.rules
 
 # tune swap and cache usage
 # http://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
 # https://wiki.archlinux.org/index.php/Swap#Swappiness
-echo "#System booster
-vm.swappiness=1
-vm.vfs_cache_pressure=50
-" | sudo tee /etc/sysctl.d/99-sysctl.conf
+#echo "#System booster
+#vm.swappiness=1
+#vm.vfs_cache_pressure=50
+#" | sudo tee /etc/sysctl.d/99-sysctl.conf
 
 # install bluetooth stack
 # https://wiki.archlinux.org/index.php/bluetooth
