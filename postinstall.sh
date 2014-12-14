@@ -21,7 +21,7 @@ sudo pacman -Syu --noconfirm
 
 # install daemon to speed up cryptographic programs
 # https://www.archlinux.org/news/gnupg-21-and-the-pacman-keyring/
-sudo pacman -Syu haveged
+sudo pacman -S --noconfirmal haveged
 sudo systemctl start haveged
 sudo systemctl enable haveged
 
@@ -311,8 +311,8 @@ package_install iotop
 # KDE
 # --------------------------------------------------
 
-# install dependencies (kde devs suggest gstreamer over vlc)
-package_install phonon-gstreamer mesa-libgl ttf-bitstream-vera
+# install dependencies
+package_install ttf-bitstream-vera
 
 # install kde using meta packages to facilitate upgrades
 # list of all packages w/ descriptions: https://www.archlinux.org/groups/x86_64/kde/
@@ -449,7 +449,7 @@ package_install gparted dosfstools
 
 # xmonad
 # https://wiki.archlinux.org/index.php/xmonad
-package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
+#package_install xmonad xmonad-contrib xorg-server-xephyr xorg-xdpyinfo hsetroot trayer xscreensaver dmenu xmobar xdotool
 
 # FTP server
 package_install vsftpd
@@ -482,7 +482,7 @@ sudo systemctl enable verynice.service
 # --------------------------------------------------
 
 # web browsers
-package_install google-chrome firefox flashplugin kpartsplugin icedtea-web-java7
+package_install google-chrome firefox flashplugin kpartsplugin icedtea-web
 
 # sqlite
 package_install sqlite sqliteman
