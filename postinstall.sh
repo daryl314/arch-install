@@ -16,6 +16,12 @@ Include = /etc/pacman.d/mirrorlist
 # upgrade packages
 sudo pacman -Syu --noconfirm
 
+# install daemon to speed up cryptographic programs
+# https://www.archlinux.org/news/gnupg-21-and-the-pacman-keyring/
+sudo pacman -Syu haveged
+sudo systemctl start haveged
+sudo systemctl enable haveged
+
 # Prerequisites for building yaourt (base devel + dependencies listed in build file)
 sudo pacman -S --noconfirm base-devel yajl diffutils
 
@@ -95,15 +101,12 @@ fi
 # install the base Xorg packages:
 package_install xorg-server xorg-server-utils xorg-xinit
 
-# install mesa for 3D support:
-package_install mesa
+# install intel video driver
+# https://wiki.archlinux.org/index.php/Intel_Graphics#Installation
+! ( lspci | grep -q Virtualbox ) && package_install xf86-video-intel lib32-mesa-libgl libva-intel-driver libva
 
-# install video driver
-# see instructions for getting acceleration working:
-#   https://wiki.archlinux.org/index.php/Xorg#Driver_installation
-! ( lspci | grep -q Virtualbox ) && package_install xf86-video-intel
-
-# add intel initramfs settings
+# add intel initramfs settings and enable early KMS
+# https://wiki.archlinux.org/index.php/Intel_Graphics#Enable_early_KMS
 # https://wiki.archlinux.org/index.php/Intel_Graphics#Blank_screen_during_boot.2C_when_.22Loading_modules.22
 sudo perl -pi -e 's/MODULES=".*"/MODULES="i915 intel_agp"/' /etc/mkinitcpio.conf
 sudo mkinitcpio -p linux

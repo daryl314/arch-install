@@ -7,32 +7,32 @@ set -e
 # - Update bios
 # - Increase video ram to 1Gb from BIOS
 # - Create GPT partition table on hard drive
-# - Create 512Mb fat32 partition with boot flag for UEFI
-# - Create 30Gb system partition
-# - Partition remaining space for /home
+# - Create 512Mb fat32 partition with boot flag for UEFI (sda1)
+# - Create 30Gb system partition (sda2)
+# - Partition remaining space for /home (sda3)
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Settings
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # hostname
-HN=daryl-arch 
+HN=daryl-arch
 
 # locale
 LOCALE_UTF8=en_US.UTF-8
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Utilities
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # run a command in chroot environment
 arch_chroot() {
   arch-chroot /mnt /bin/bash -c "${1}"
 }
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Partitioning
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # display partition table(s)
 lsblk | grep '^sd' | cut -c 1-3 | xargs -i parted /dev/{} print
@@ -41,46 +41,51 @@ lsblk | grep '^sd' | cut -c 1-3 | xargs -i parted /dev/{} print
 DRIVE=/dev/`lsblk | grep '^sd' | head -n 1 | cut -c 1-3`
 
 # assume first ext4 partition is root, last ext4 partition is home
-ROOT_PART=`parted "$DRIVE" print | grep ext4 | head -n 1 | cut -c 2`
-HOME_PART=`parted "$DRIVE" print | grep ext4 | tail -n 1 | cut -c 2`
-SWAP_PART=`parted "$DRIVE" print | grep swap | tail -n 1 | cut -c 2`
+ROOT_PART=`parted "$DRIVE" print | grep ext4  | head -n 1 | cut -c 2`
+HOME_PART=`parted "$DRIVE" print | grep ext4  | tail -n 1 | cut -c 2`
+BOOT_PART=`parted "$DRIVE" print | grep fat32 | tail -n 1 | cut -c 2`
 
 # prompt for root, home, and swap partitions
 read -e -p "Root partition: " -i "$DRIVE$ROOT_PART" ROOT
 read -e -p "Home partition: " -i "$DRIVE$HOME_PART" HOME
-read -e -p "Swap partition: " -i "$DRIVE$SWAP_PART" SWAP
+read -e -p "Swap partition: " -i "$DRIVE$SWAP_PART" BOOT
 
 # set up mounts
-echo -e "\nMounting / to $ROOT\nMounting /home to $HOME\n\n"
+echo -e "\nMounting / to $ROOT\nMounting /home to $HOME\nMounting /boot to $BOOT\n\n"
 mount "$ROOT" /mnt
 mkdir -p /mnt/home
 mount "$HOME" /mnt/home
-swapon "$SWAP"
+mkdir -p /mnt/boot
+mount "$BOOT" /mnt/boot
 
 # Reduce portion of home partition reserved for root use to 1%
 # https://wiki.archlinux.org/index.php/Ext4#Remove_reserved_blocks
 tune2fs -m 1.0 "$HOME"
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Set up pacman mirrors
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 #wget "https://www.archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4" \
 #  -O /etc/pacman.d/mirrorlist
 #cat /etc/pacman.d/mirrorlist | sed "s/#Server/Server/" > /etc/pacman.d/mirrorlist
 
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Install base system
-# -------------------------------------------------- 
+# --------------------------------------------------
 
 # install packages
 #   - adding wget to fetch post-install scripts
 #   - adding os-prober to detect other installed operating systems
-pacstrap /mnt base wget os-prober
+#   - adding intel-ucode for microcode updates: https://wiki.archlinux.org/index.php/Microcode
+pacstrap /mnt base wget os-prober intel-ucode
 
 # generate fstab (using > instead of >> to prevent duplicate entries)
 genfstab -U -p /mnt > /mnt/etc/fstab
+
+# add noatime to mount flags for SSD's
+# https://wiki.archlinux.org/index.php/Solid_State_Drives#noatime_mount_option
 
 # prompt user that this looks kosher
 echo ""
@@ -89,7 +94,7 @@ cat /mnt/etc/fstab
 read -p "Press Ctrl-C if this doesn't look okay..."
 
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Configure system
 # --------------------------------------------------
 
@@ -119,11 +124,12 @@ arch_chroot "passwd"
 
 # install bootloader
 pacstrap /mnt grub
-arch_chroot "grub-install --target=i386-pc --recheck ${DRIVE}"
+arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck" # for UEFI
+# arch_chroot "grub-install --target=i386-pc --recheck ${DRIVE}" (for BIOS)
 arch_chroot "os-prober"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # User Management
 # --------------------------------------------------
 
@@ -148,7 +154,7 @@ Cmnd_Alias ARCHLINUX = /usr/bin/gparted, /usr/bin/pacman
 
 root ALL = (ALL) ALL
 %wheel ALL = (ALL) ALL, NOPASSWD: WHEELER, NOPASSWD: PROCESSES, NOPASSWD: ARCHLINUX, NOPASSWD: EDITS
- 
+
 Defaults !requiretty, !tty_tickets, !umask
 Defaults visiblepw, path_info, insults, lecture=always
 Defaults loglinelen = 0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
@@ -175,14 +181,14 @@ alias ls='ls --color=auto'
 PS1='\[\e[1;31m\][\u@\h \W]\$\[\e[0m\] '
 " > /mnt/root/.bashrc
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Fetch post-install script(s)
 # --------------------------------------------------
 
 # postinstall.sh
 wget -O /mnt/home/daryl/postinstall.sh https://gitlab.com/daryl314/arch/raw/master/postinstall.sh?private_token=vSwfe1xzGbzPbPeDNpZ7
 
-# -------------------------------------------------- 
+# --------------------------------------------------
 # Unmount and reboot
 # --------------------------------------------------
 
