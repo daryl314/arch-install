@@ -130,6 +130,10 @@ arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader
 arch_chroot "os-prober"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
+# kernel settings for NUC audio
+# https://bbs.archlinux.org/viewtopic.php?pid=1446773#p1446773
+echo "options snd-hda-intel index=1,0" > /mnt/etc/modprobe.d/50-alsa.conf
+
 # --------------------------------------------------
 # User Management
 # --------------------------------------------------

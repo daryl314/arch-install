@@ -8,7 +8,7 @@ set -ex
 # --------------------------------------------------
 
 # enable multilib
-grep '^\[multilib\]' /etc/pacman.conf && echo "
+grep '^\[multilib\]' /etc/pacman.conf || echo "
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 " | sudo tee -a /etc/pacman.conf
@@ -181,10 +181,6 @@ fi
 # https://wiki.archlinux.org/index.php/Systemd#Power_management
 #system_ctl enable upower
 
-# readahead - improve boot time
-# https://wiki.archlinux.org/index.php/Improve_Boot_Performance#Readahead
-sudo systemctl enable systemd-readahead-collect systemd-readahead-replay
-
 # zram - compressed swap in RAM
 # https://wiki.archlinux.org/index.php/Maximizing_Performance#Compcache.2FZram
 package_install zramswap
@@ -204,6 +200,7 @@ package_install pkgstats
 # configure cron
 # https://wiki.archlinux.org/index.php/cron
 # crontab located at /var/spool/cron/daryl
+package_install cronie
 sudo systemctl start cronie
 sudo systemctl enable cronie
 echo "\
@@ -283,15 +280,15 @@ sudo systemctl enable bluetooth
 
 # printer driver (print to pdf)
 # https://wiki.archlinux.org/index.php/CUPS#PDF_virtual_printer
-package_install cups-pdf               # install driver
-sudo groupadd printadmin               # create printer admin group
-sudo groupadd lp                       # create printing group
-sudo gpasswd -a daryl printadmin       # add to admin group
-sudo gpasswd -a daryl lp               # add to printing group
+package_install cups-pdf                     # install driver
+sudo groupadd -f printadmin                  # create printer admin group
+sudo groupadd -f lp                          # create printing group
+sudo gpasswd -a daryl printadmin             # add to admin group
+sudo gpasswd -a daryl lp                     # add to printing group
 sudo perl -pi -e 's/#?(^SystemGroup.*)/$1 printadmin/' /etc/cups/cups-files.conf
 sudo perl -pi -e 's/#?Out.*/Out \${HOME}/' /etc/cups/cups-pdf.conf
-sudo systemctl start cups.service      # start service
-sudo systemctl enable cups.service     # autostart service
+sudo systemctl start org.cups.cupsd.service  # start service
+sudo systemctl enable org.cups.cupsd.service # autostart service
 sudo lpadmin -p Virtual_PDF_Printer -D "Virtual PDF Printer" -v cups-pdf:/ -E -P /usr/share/cups/model/CUPS-PDF.ppd
 
 # install 'locate' command and perform initial scan (will be updated automatically in future)
@@ -306,6 +303,17 @@ package_install ncdu
 
 # iotop - top equivalent for I/O
 package_install iotop
+
+# enable TRIM for SSDs
+# https://wiki.archlinux.org/index.php/Solid_State_Drives#TRIM
+sudo systemctl start fstrim.timer
+sudo systemctl enable fstrim.timer
+
+# change IO scheduler for SSDs
+# https://wiki.archlinux.org/index.php/Solid_State_Drives#I.2FO_Scheduler
+echo '# set deadline scheduler for non-rotating disks
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
+' | sudo tee /etc/udev/rules.d/60-schedulers.rules
 
 # --------------------------------------------------
 # KDE
@@ -490,16 +498,6 @@ package_install sqlite sqliteman
 # coffeescript
 package_install coffee-script
 
-# pipelight (installing before PlayOnLinux to use custom wine build)
-# NOTE: This needs to be installed without having Firefox open!
-killall firefox
-sudo pacman-key -r E49CC0415DC2D5CA
-sudo pacman-key --lsign-key E49CC0415DC2D5CA
-echo '
-[pipelight]
-Server = http://repos.fds-team.de/stable/arch/$arch' | sudo tee -a /etc/pacman.conf
-package_install pipelight wine-silverlight
-
 # wine/PlayOnLinux
 # https://wiki.archlinux.org/index.php/wine
 package_install playonlinux wine-mono wine_gecko samba libxml2
@@ -548,8 +546,8 @@ killall dropbox" | sudo tee /etc/wicd/scripts/postdisconnect/dropbox
 sudo chmod +x /etc/wicd/scripts/postconnect/dropbox
 sudo chmod +x /etc/wicd/scripts/postdisconnect/dropbox
 
-# vmware viewer
-package_install vmware-view-client
+# vmware viewer (requires 32-bit building code)
+package_install gcc-multilib vmware-view-client
 
 # splashtop streamer
 package_install splashtop-streamer
