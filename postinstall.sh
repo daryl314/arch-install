@@ -424,6 +424,9 @@ gem install evernote-thrift              # for Evernote backup script
 # markdown to html
 package_install markdown python-markdown elinks
 
+# atom text editor
+package_install atom-editor-bin
+
 # --------------------------------------------------
 # System tools
 # --------------------------------------------------
