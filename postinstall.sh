@@ -421,6 +421,9 @@ gem install pry-rescue pry-nav           # debugging tools
 gem install pry-stack_explorer           # must be installed separately to avoid conflicts
 gem install evernote-thrift              # for Evernote backup script
 
+# python packages
+package_install python-yaml
+
 # markdown to html
 package_install markdown python-markdown elinks
 
