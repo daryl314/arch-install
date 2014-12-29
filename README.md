@@ -1,27 +1,23 @@
 # Arch installation notes
 
+These installation scripts have been written for my machine using my username
+(daryl).  I would not expect them to adapt to other machines as-is, but these
+can be used as a starting point for a new Arch Linux installation.
+
 ## Installation of a new arch linux system
 
-* Browse to ~/Coding/Desktop/arch on outer machine
-* Run command on outer machine: python -m SimpleHTTPServer
-* Get script from inner machine: wget 192.168.254.143:8000/install.sh
-* Run script from inner machine: bash install.sh
+* Install Arch Linux using installation media
+* Run `bash install.sh`
 
 ## Post-installation
 
 * Log in as daryl
-* `bash postinstall.sh`
+* Run `bash postinstall.sh`
 
-## Fetching from Gitlab
+## Fetching from GitHub
 
-```
-gitlab-fetch() {
-  wget -O $1 "https://gitlab.com/daryl314/arch/raw/master/$1?private_token=vSwfe1xzGbzPbPeDNpZ7"
-}
-```
-
-* `gitlab-fetch install.sh`
-* `gitlab-fetch postinstall.sh`
+* `wget https://raw.githubusercontent.com/daryl314/arch-install/master/install.sh`
+* `wget https://raw.githubusercontent.com/daryl314/arch-install/master/postinstall.sh`
 
 ## Arch references
 

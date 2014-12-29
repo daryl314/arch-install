@@ -191,7 +191,7 @@ PS1='\[\e[1;31m\][\u@\h \W]\$\[\e[0m\] '
 # --------------------------------------------------
 
 # postinstall.sh
-wget -O /mnt/home/daryl/postinstall.sh https://gitlab.com/daryl314/arch/raw/master/postinstall.sh?private_token=vSwfe1xzGbzPbPeDNpZ7
+wget -O /mnt/home/daryl/postinstall.sh https://raw.githubusercontent.com/daryl314/arch-install/master/postinstall.sh
 
 # --------------------------------------------------
 # Unmount and reboot

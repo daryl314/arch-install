@@ -146,7 +146,7 @@ fi
 # Install git
 package_install git tk
 git config --global user.name "Daryl St. Laurent"
-git config --global user.email "daryl.stlaurent@gmail.com"
+git config --global user.email "daryl.stlaurent+github@gmail.com"
 git config --global color.ui true
 
 # Install ssh
