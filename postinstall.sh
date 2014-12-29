@@ -203,13 +203,6 @@ package_install pkgstats
 package_install cronie
 sudo systemctl start cronie
 sudo systemctl enable cronie
-echo "\
-#Stop Crashplan service at 4PM on weekdays
-0 16 * * 1,2,3,4,5      root    systemctl stop crashplan.service
-
-#Start Crashplan service at 1AM on weekdays
-0 1 * * 1,2,3,4,5       root    systemctl start crashplan.service
-" | sudo tee /etc/crontab
 
 # make server mountpoints
 sudo mkdir -p /mnt/server
