@@ -520,6 +520,8 @@ package_install thunderbird
 
 # crashplan
 package_install crashplan
+sudo systemctl start crashplan.service
+sudo systemctl enable crashplan.service
 
 # virtualbox
 # https://wiki.archlinux.org/index.php/VirtualBox
