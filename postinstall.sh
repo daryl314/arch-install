@@ -44,6 +44,10 @@ aur_build() {
 # Build and install yaourt
 aur_build "package-query yaourt"
 
+# Save built AUR packages in pacman cache
+# https://wiki.archlinux.org/index.php/yaourt#Cache
+sudo perl -pi -e 's/#?EXPORT=./EXPORT=2 /' /etc/yaourtrc
+
 failure_notify() {
   echo ""
   echo -e "\e[1;31mPackage installation failed: $@\e[0m"
@@ -559,6 +563,9 @@ package_install splashtop-streamer
 
 # nixnote (evernote client)
 package_install nixnote
+
+# pdf editor
+package_install masterpdfeditor
 
 # --------------------------------------------------
 # Games
