@@ -332,6 +332,12 @@ package_install `pacman -Sg kde-meta | \
     -e ^kde-meta-kdepim \
     -e ^kde-meta-kdetoys`
 
+# switch to plasma 5
+sudo pacman -Su sddm sddm-kcm
+sudo pacman -Rc kdebase-workspace
+sudo pacman -Su plasma-meta
+package_install libappindicator-gtk2 libappindicator-gtk3 sni-qt lib32-sni-qt
+
 # set up common directories (downloads, music, documents, etc)
 # https://wiki.archlinux.org/index.php/Xdg_user_directories
 # not sure if i want/need this??
@@ -350,9 +356,13 @@ package_install avidemux-qt                       # video editor
 package_install ksuperkey                         # allow binding to meta key
 package_install bluedevil                         # bluetooth control
 
-
-# configure startup of kde
-sudo systemctl enable kdm
+# configure startup of sddm
+sudo systemctl enable sddm
+echo "[Autologin]
+Relogin=false
+Session=plasma.desktop
+User=daryl
+" | sudo tee /etc/sddm.conf
 
 # start wicd service
 sudo systemctl enable wicd
@@ -375,9 +385,6 @@ package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
 
 # wallpaper links
 ! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/CaledoniaWallpapers/* /usr/share/wallpapers/
-
-# enable autologin
-! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/kdmrc /usr/share/config/kdm/kdmrc
 
 # --------------------------------------------------
 # Math software
