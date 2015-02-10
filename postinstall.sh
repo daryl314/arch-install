@@ -349,7 +349,7 @@ package_install digikam kipi-plugins              # kde photo manager
 package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
 package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
-package_install wicd-kde                          # network manager (needed?)
+package_install plasma-nm                         # KDE front end to NetworkManager
 package_install kcmsystemd                        # system settings: systemd management
 package_install kdiff3                            # file diff viewers
 package_install avidemux-qt                       # video editor
@@ -364,10 +364,9 @@ Session=plasma.desktop
 User=daryl
 " | sudo tee /etc/sddm.conf
 
-# start wicd service
-sudo systemctl enable wicd
-sudo systemctl start wicd
-sudo ln -fs ~/dotfiles/wicd/* /etc/wicd/
+# enable NetworkManager service
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
 
 # increase number of nepomuk watched files (from arch kde wiki page)
 echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.d/99-inotify.conf
