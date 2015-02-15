@@ -387,6 +387,8 @@ package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
 
 # wallpaper links
 ! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/CaledoniaWallpapers/* /usr/share/wallpapers/
+! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/Vanilla-1920x1080.jpg /usr/share/wallpapers/
+! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/zen_stones_background-wallpaper-1920x1080.jpg /usr/share/wallpapers/
 
 # --------------------------------------------------
 # Math software
