@@ -530,6 +530,9 @@ package_install calibre
 # shotwell
 package_install shotwell
 
+# aftershot pro
+package_install aftershotpro
+
 # mozilla thunderbird
 package_install thunderbird
 
