@@ -390,6 +390,14 @@ package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
 ! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/Vanilla-1920x1080.jpg /usr/share/wallpapers/
 ! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/zen_stones_background-wallpaper-1920x1080.jpg /usr/share/wallpapers/
 
+# disable debug output logging
+if ! grep -q QT_LOGGING_RULES /usr/bin/startkde
+then echo '
+# disable output logging
+QT_LOGGING_RULES="*.debug=false"
+export QT_LOGGING_RULES' | sudo tee -a /usr/bin/startkde
+fi
+
 # --------------------------------------------------
 # Math software
 # --------------------------------------------------
