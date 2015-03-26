@@ -509,6 +509,9 @@ package_install btsync
 systemctl --user start btsync
 systemctl --user enable btsync
 
+# xscreensaver (KDE backup)
+package_install xscreensaver
+
 # --------------------------------------------------
 # Other applications
 # --------------------------------------------------
