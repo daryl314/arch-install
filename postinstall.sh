@@ -179,6 +179,10 @@ fi
 # Common setup
 # --------------------------------------------------
 
+# install fish shell and make default
+package_install fish powerline-fonts-git
+sudo chsh -s /usr/bin/fish daryl
+
 #Abstraction for enumerating power devices, listening to device events and querying history and statistics
 # http://upower.freedesktop.org/
 # do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
