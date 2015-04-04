@@ -596,6 +596,9 @@ package_install nixnote
 # pdf editor
 package_install masterpdfeditor
 
+# haroopad (markdown editor)
+package_install haroopad
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
