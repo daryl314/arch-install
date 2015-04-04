@@ -211,7 +211,9 @@ package_install pkgstats
 package_install cronie
 sudo systemctl start cronie
 sudo systemctl enable cronie
-! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/bin/evernote_sync /etc/cron.hourly/
+echo "#!/bin/bash
+su daryl -c /home/daryl/dotfiles/bin/evernote_sync" | sudo tee /etc/cron.hourly/evernote_sync
+sudo chmod +x /etc/cron.hourly/evernote_sync
 
 # make server mountpoints
 sudo mkdir -p /mnt/server
