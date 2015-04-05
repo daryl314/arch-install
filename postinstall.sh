@@ -599,6 +599,9 @@ package_install masterpdfeditor
 # haroopad (markdown editor)
 package_install haroopad
 
+# LaTeX equation editor
+package_install equalx-bzr texlive-core
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
