@@ -602,6 +602,9 @@ package_install haroopad
 # LaTeX equation editor
 package_install equalx-bzr texlive-core
 
+# trash-cli (cross-desktop trash access from command line)
+package_install trash-cli
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
