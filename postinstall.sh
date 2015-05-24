@@ -605,6 +605,9 @@ package_install equalx-bzr texlive-core
 # trash-cli (cross-desktop trash access from command line)
 package_install trash-cli
 
+# tools for remapping keystrokes
+package_install xbindkeys xdotool
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
