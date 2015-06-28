@@ -462,6 +462,7 @@ sudo modprobe ecryptfs
 # encfs
 # https://wiki.archlinux.org/index.php/EncFS
 package_install encfs
+echo "user_allow_other" | sudo tee -a /etc/fuse.conf
 
 # sshfs
 # https://wiki.archlinux.org/index.php/sshfs
