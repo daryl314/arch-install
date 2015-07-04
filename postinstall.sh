@@ -609,6 +609,12 @@ package_install trash-cli
 # tools for remapping keystrokes
 package_install xbindkeys xdotool
 
+# tree
+package_install tree
+
+# autojump
+package_install autojump
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
