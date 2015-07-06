@@ -472,7 +472,7 @@ package_install sshfs
 package_install rsync rsnapshot rdiff-backup
 
 # package management
-package_install octopi
+package_install octopi-frameworks
 
 # conky
 # https://wiki.archlinux.org/index.php/conky
