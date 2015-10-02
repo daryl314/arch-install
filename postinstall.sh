@@ -124,6 +124,15 @@ sudo mkinitcpio -p linux
 #sudo grub-mkconfig -o /boot/grub/grub.cfg
 #echo "xrandr --output VGA1 --mode 1920x1080" | sudo tee -a /usr/share/config/kdm/Xsetup
 
+# use UXA backend until SNA is ready to avoid Plasma segfaults
+# https://bbs.archlinux.org/viewtopic.php?id=199338
+# https://wiki.archlinux.org/index.php/Intel_graphics#SNA_issues
+echo 'Section "Device"
+   Identifier  "Intel Graphics"
+   Driver      "intel"
+   Option      "AccelMethod"  "uxa"
+EndSection' | sudo tee /etc/X11/xorg.conf.d/20-intel.conf
+
 # extra fonts
 # https://wiki.archlinux.org/index.php/Font_Configuration
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
