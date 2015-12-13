@@ -369,7 +369,7 @@ package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
 package_install yakuake                           # dropdown terminal
 package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install plasma-nm                         # KDE front end to NetworkManager
-package_install kcmsystemd                        # system settings: systemd management
+package_install systemd-kcm                       # system settings: systemd management
 package_install kdiff3                            # file diff viewers
 package_install avidemux-qt                       # video editor
 package_install ksuperkey                         # allow binding to meta key
