@@ -140,7 +140,7 @@ echo "options snd-hda-intel index=1,0" > /mnt/etc/modprobe.d/50-alsa.conf
 
 # create user account: daryl
 # add to user and sudo groups
-arch_chroot "useradd -m -g users -G wheel -s /bin/bash daryl"
+arch_chroot "useradd -m -g users -G wheel -u 1027 -s /bin/bash daryl"
 echo ""
 echo "===== Password for daryl ====="
 arch_chroot "passwd daryl"
