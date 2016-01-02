@@ -358,12 +358,17 @@ ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue
 # install dependencies
 package_install ttf-bitstream-vera
 
-# install kde using meta packages to facilitate upgrades
-# list of all packages w/ descriptions: https://www.archlinux.org/groups/x86_64/kde/
+# install plasma desktop
+package_install plasma-meta
+
+# install kde applications using meta packages to facilitate upgrades
+# list of all packages w/ descriptions: https://www.archlinux.org/groups/x86_64/kde-applications/
 # remove group name from each line
 # remove selected meta-packages from list
-package_install `pacman -Sg kde-meta | \
-  sed 's/kde-meta //' | \
+package_install `pacman -Si kde-applications-meta | \
+  grep "Depends On" | \
+  cut -d: -f2 | \
+  sed 's/  /\n/' | \
   grep -v \
     -e ^kde-meta-kdeaccessibility \
     -e ^kde-meta-kdeedu \
@@ -372,9 +377,6 @@ package_install `pacman -Sg kde-meta | \
     -e ^kde-meta-kdetoys`
 
 # switch to plasma 5
-sudo pacman -Su sddm sddm-kcm
-sudo pacman -Rc kdebase-workspace
-sudo pacman -Su plasma-meta
 package_install libappindicator-gtk2 libappindicator-gtk3 sni-qt lib32-sni-qt
 
 # set up common directories (downloads, music, documents, etc)
