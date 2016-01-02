@@ -227,6 +227,7 @@ sudo chmod +x /etc/cron.hourly/evernote_sync
 # make server mountpoints
 sudo mkdir -p /mnt/server
 sudo mkdir -p /mnt/server-local
+sudo mkdir -p /mnt/nas-home
 sudo chown daryl /mnt/*
 sudo chgrp users /mnt/*
 
@@ -245,6 +246,25 @@ then echo "
 # 192.168.254.20  www.kateanddaryl.com" | sudo tee -a  /etc/hosts
 fi
 
+# set up NFS mounts on NAS
+package_install nfs-utils
+sudo systemctl enable rpcbind.service
+sudo systemctl enable nfs-client.target
+sudo systemctl enable remote-fs.target
+sudo systemctl start rpcbind.service
+sudo systemctl start nfs-client.target
+sudo systemctl start remote-fs.target
+if ! grep -q nas-home /etc/fstab
+then echo "
+# nas mounts
+192.168.254.50:/volume1/homes/daryl /mnt/nas-home nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/photo /home/daryl/Media/Photos/My\040Photos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/janet_photos /home/daryl/Media/Photos/Janet nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/music /home/daryl/Media/Music nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/video /home/daryl/Media/Videos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/homes/kate /home/daryl/Documents/Kate nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+" | sudo tee -a /etc/fstab
+
 # webdav setup
 package_install davfs2
 mkdir -p ~/owncloud
@@ -252,7 +272,7 @@ sudo usermod -a -G network daryl
 if ! grep -q owncloud /etc/fstab
 then echo "
 # owncloud configuration
-https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud davfs user,noauto,uid=daryl,file_mode=600,dir_mode=700 0 1
+#https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud davfs user,noauto,uid=daryl,file_mode=600,dir_mode=700 0 1
 " | sudo tee -a /etc/fstab
 fi
 
