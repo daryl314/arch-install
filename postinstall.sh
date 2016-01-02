@@ -644,6 +644,12 @@ package_install tree
 # autojump
 package_install autojump
 
+# dupeguru (duplicate finder)
+package_install dupeguru-se
+
+# tig (ncurses git client)
+package_install tig
+
 # --------------------------------------------------
 # Games
 # --------------------------------------------------
