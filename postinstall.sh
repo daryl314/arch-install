@@ -130,7 +130,7 @@ sudo mkinitcpio -p linux
 echo 'Section "Device"
    Identifier  "Intel Graphics"
    Driver      "intel"
-   Option      "AccelMethod"  "uxa"
+   Option      "TearFree"    "true"
 EndSection' | sudo tee /etc/X11/xorg.conf.d/20-intel.conf
 
 # extra fonts
