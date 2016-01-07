@@ -260,12 +260,12 @@ sudo systemctl start remote-fs.target
 if ! grep -q nas-home /etc/fstab
 then echo "
 # nas mounts
-192.168.254.50:/volume1/homes/daryl /mnt/nas-home nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
-192.168.254.50:/volume1/photo /home/daryl/Media/Photos/My\040Photos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
-192.168.254.50:/volume1/janet_photos /home/daryl/Media/Photos/Janet nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
-192.168.254.50:/volume1/music /home/daryl/Media/Music nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
-192.168.254.50:/volume1/video /home/daryl/Media/Videos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
-192.168.254.50:/volume1/homes/kate /home/daryl/Documents/Kate nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,x-systemd.idle-timeout=1min 0 0
+192.168.254.50:/volume1/homes/daryl /mnt/nas-home nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/photo /home/daryl/Media/Photos/My\040Photos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/janet_photos /home/daryl/Media/Photos/Janet nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/music /home/daryl/Media/Music nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/video /home/daryl/Media/Videos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/homes/kate /home/daryl/Documents/Kate nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
 " | sudo tee -a /etc/fstab
 
 # webdav setup
