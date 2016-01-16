@@ -313,9 +313,6 @@ package_install bluez bluez-utils
 sudo modprobe btusb
 sudo systemctl start bluetooth
 sudo systemctl enable bluetooth
-echo '# Set bluetooth power up for dongle
-ACTION=="add", KERNEL=="hci1", RUN+="/usr/bin/hciconfig hci1 up"
-' | sudo tee "/etc/udev/rules.d/10-local.rules"
 
 # printer driver (print to pdf)
 # https://wiki.archlinux.org/index.php/CUPS#PDF_virtual_printer
@@ -533,12 +530,12 @@ package_install colordiff
 # https://wiki.archlinux.org/index.php/S.M.A.R.T.
 package_install smartmontools gsmartcontrol
 
-# Power management
+# Power management (for laptops)
 # https://wiki.archlinux.org/index.php/Power_saving
 # https://wiki.archlinux.org/index.php/TLP
-package_install tlp
-sudo systemctl enable tlp
-sudo systemctl enable tlp-sleep.service
+#package_install tlp
+#sudo systemctl enable tlp
+#sudo systemctl enable tlp-sleep.service
 
 # verynice (runaway process helper)
 # https://wiki.archlinux.org/index.php/VeryNice
