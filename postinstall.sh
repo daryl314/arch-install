@@ -377,7 +377,7 @@ package_install `pacman -Si kde-applications-meta | \
     -e ^kde-meta-kdetoys`
 
 # switch to plasma 5
-package_install libappindicator-gtk2 libappindicator-gtk3 sni-qt lib32-sni-qt
+package_install libappindicator-gtk2 libappindicator-gtk3 sni-qt lib32-sni-qt breeze-kde4 breeze-gtk
 
 # set up common directories (downloads, music, documents, etc)
 # https://wiki.archlinux.org/index.php/Xdg_user_directories
