@@ -351,6 +351,16 @@ echo '# set deadline scheduler for non-rotating disks
 ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
 ' | sudo tee /etc/udev/rules.d/60-schedulers.rules
 
+# kvm
+# https://wiki.archlinux.org/index.php/QEMU
+# https://wiki.archlinux.org/index.php/libvirt
+package_install virt-manager ebtables dnsmasq virt-viewer libvirt qemu multipath-tools
+sudo systemctl start libvirtd.service
+sudo systemctl start virtlogd.service
+sudo systemctl enable libvirtd.service
+sudo usermod -aG libvirt daryl
+echo "options loop max_part=15" | sudo tee /etc/modprobe.d/loop_partitions.conf
+
 # --------------------------------------------------
 # KDE
 # --------------------------------------------------
