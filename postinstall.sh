@@ -533,6 +533,15 @@ sudo perl -pi -e 's/#?local_enable=.*/local_enable=YES/' /etc/vsftpd.conf
 sudo perl -pi -e 's/#?write_enable=.*/write_enable=YES/' /etc/vsftpd.conf
 sudo systemctl enable vsftpd.service
 
+# VNC server (including LXQT for session)
+package_install tigervnc lxqt qterminal
+systemctl --user start vncserver@:1
+systemctl --user enable vncserver@:1
+
+# ssh
+sudo systemctl start sshd.service
+sudo systemctl enable sshd.service
+
 # colorize diff output
 package_install colordiff
 
@@ -628,9 +637,6 @@ sudo chmod +x /etc/wicd/scripts/postdisconnect/dropbox
 
 # vmware viewer (requires 32-bit building code)
 package_install gcc-multilib vmware-view-client
-
-# splashtop streamer
-package_install splashtop-streamer
 
 # nixnote (evernote client)
 package_install nixnote
