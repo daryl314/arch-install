@@ -138,6 +138,19 @@ EndSection' | sudo tee /etc/X11/xorg.conf.d/20-intel.conf
 # NOTE: don't want fonts looking like this: http://i.imgur.com/t6VQm2n.png
 package_install ttf-inconsolata
 
+# disable bitmapped fonts
+# http://askubuntu.com/questions/21097/configure-fontconfig-to-ignore-bitmaps-in-scalable-fonts
+echo "<?xml version=\"1.0\"?>
+<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">
+<fontconfig>
+  <match target=\"font\">
+    <edit name=\"embeddedbitmap\" mode=\"assign\">
+      <bool>false</bool>
+    </edit>
+  </match>
+</fontconfig>" | sudo tee /etc/fonts/conf.avail/20-no-embedded.conf
+sudo ln -s /etc/fonts/conf.avail/20-no-embedded.conf /etc/fonts/conf.d/
+
 # --------------------------------------------------
 # Audio setup
 # --------------------------------------------------
