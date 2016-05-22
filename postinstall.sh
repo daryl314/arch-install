@@ -252,14 +252,7 @@ if ! grep -q server /etc/hosts
 then echo "
 # additional network hosts
 192.168.254.1   router
-192.168.254.20  server
-192.168.254.20  local.darylstlaurent.com
-192.168.254.20  wiki.local.darylstlaurent.com
-192.168.254.20  todo.local.darylstlaurent.com
-192.168.254.20  gtd.local.darylstlaurent.com
-
-# redirect www.kateanddaryl.com for testing
-# 192.168.254.20  www.kateanddaryl.com" | sudo tee -a  /etc/hosts
+" | sudo tee -a  /etc/hosts
 fi
 
 # set up NFS mounts on NAS
