@@ -25,7 +25,8 @@ sudo pacman -S --noconfirmal haveged
 sudo systemctl start haveged
 sudo systemctl enable haveged
 
-# Prerequisites for building yaourt (base devel + dependencies listed in build file)
+# Prerequisites for building pacaur (base devel + dependencies listed in build file)
+# NOTE: these were requirements for yaourt.  are yajl and diffutils still needed??
 sudo pacman -S --noconfirm base-devel yajl diffutils
 
 # Function to build and install packages from the AUR (as user instead of root)
@@ -33,21 +34,24 @@ aur_build() {
   for PKG in $1; do
     [[ ! -d /tmp/build ]] && mkdir /tmp/build
     cd /tmp/build
-    curl -o $PKG.tar.gz https://aur.archlinux.org/packages/${PKG:0:2}/$PKG/$PKG.tar.gz
-    tar zxvf $PKG.tar.gz
-    rm $PKG.tar.gz
+    git clone https://aur.archlinux.org/$PKG.git
     cd $PKG
     makepkg -csi --noconfirm
   done
 }
 
-# Build and install yaourt
-aur_build "package-query yaourt"
+# Build and install pacaur
+gpg --recv-keys --keyserver hkp://pgp.mit.edu 1EB2638FF56C0C53
+aur_build "cower pacaur"
 
 # Save built AUR packages in pacman cache
-# https://wiki.archlinux.org/index.php/yaourt#Cache
-sudo perl -pi -e 's/#?EXPORT=./EXPORT=2 /' /etc/yaourtrc
+sudo chmod a+w /var/cache/pacman/pkg
+sudo perl -pi -e 's/^#?PKGDEST=.*/PKGDEST=\/var\/cache\/pacman\/pkg/' /etc/makepkg.conf
 
+# Turn on colored output
+sudo perl -pi -e 's/#Color */Color/' /etc/pacman.conf
+
+# Function to notify user of failures
 failure_notify() {
   echo ""
   echo -e "\e[1;31mPackage installation failed: $@\e[0m"
@@ -57,17 +61,17 @@ failure_notify() {
 # Function to install packages without confirmation
 package_install() {
 #  /bin/rm -rf /tmp/* /tmp/.* &>/dev/null # clear tmp folder
-  yaourt -S --noconfirm $@ || failure_notify $@
+  pacaur -S --noconfirm $@ || failure_notify $@
 }
 
 # Function to remove packages (without confirmation??)
 package_remove() {
-  yaourt -Rcsn --noconfirm $@
+  pacaur -Rcsn --noconfirm $@
 }
 
-# install powerpill to speed up downloads (and configure yaourt to use it)
+# install powerpill to speed up downloads
+# it is used by setting the PACMAN environment variable
 package_install powerpill
-echo 'PACMAN="powerpill"' | sudo tee -a /etc/yaourtrc
 sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 sudo reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
 
