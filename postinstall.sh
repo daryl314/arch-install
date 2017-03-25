@@ -439,6 +439,14 @@ User=daryl
 sudo systemctl enable NetworkManager
 sudo systemctl start NetworkManager
 
+# configure network hostname
+nmcli con modify "Ethernet connection" ipv4.dhcp-hostname `hostname`
+
+# limit journal size (can slow NetworkManager boot time)
+# https://wiki.archlinux.org/index.php/Systemd#Boot_time_increasing_over_time
+# https://wiki.archlinux.org/index.php/Systemd#Journal_size_limit
+grep ^SystemMaxUse=50M /etc/systemd/journald.conf || echo "SystemMaxUse=50M" | sudo tee -a /etc/systemd/journald.conf 
+
 # increase number of nepomuk watched files (from arch kde wiki page)
 echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.d/99-inotify.conf
 
