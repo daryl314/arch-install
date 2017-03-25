@@ -209,6 +209,9 @@ fi
 package_install fish powerline-fonts-git
 sudo chsh -s /usr/bin/fish daryl
 
+# ack
+package_install ack
+
 #Abstraction for enumerating power devices, listening to device events and querying history and statistics
 # http://upower.freedesktop.org/
 # do i want this?  can cause slow dialog boxes: https://wiki.archlinux.org/index.php/KDE#Dolphin_and_File_Dialogs_are_extremely_slow_to_start_everytime
@@ -370,6 +373,13 @@ sudo systemctl start virtlogd.service
 sudo systemctl enable libvirtd.service
 sudo usermod -aG libvirt daryl
 echo "options loop max_part=15" | sudo tee /etc/modprobe.d/loop_partitions.conf
+
+# docker
+# https://wiki.archlinux.org/index.php/Docker
+package_install docker
+sudo systemctl start docker.service
+sudo systemctl enable docker.service
+
 
 # --------------------------------------------------
 # KDE
