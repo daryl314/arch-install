@@ -69,12 +69,6 @@ package_remove() {
   pacaur -Rcsn --noconfirm $@
 }
 
-# install powerpill to speed up downloads
-# it is used by setting the PACMAN environment variable
-package_install powerpill
-sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-sudo reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
-
 # --------------------------------------------------
 # Virtualbox guest additions setup
 # --------------------------------------------------
