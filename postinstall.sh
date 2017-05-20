@@ -104,7 +104,7 @@ fi
 # --------------------------------------------------
 
 # install the base Xorg packages:
-package_install xorg-server xorg-server-utils xorg-xinit
+package_install xorg-server xorg-xinit xorg-xrandr
 
 # install intel video driver
 # https://wiki.archlinux.org/index.php/Intel_Graphics#Installation
@@ -413,7 +413,6 @@ package_install kde-telepathy-meta                # chat program (use instead of
 package_install digikam kipi-plugins              # kde photo manager
 package_install k3b cdrdao dvd+rw-tools           # cd/dvd burning
 package_install yakuake                           # dropdown terminal
-package_install yakuake-skin-plasma-oxygen-panel  # oxygen theme for yakuake
 package_install plasma-nm                         # KDE front end to NetworkManager
 package_install systemd-kcm                       # system settings: systemd management
 package_install kdiff3                            # file diff viewers
@@ -453,7 +452,7 @@ mkdir -p ~/.compose-cache
 
 # common theming with gtk apps
 package_install kde-gtk-config
-package_install oxygen-gtk2 oxygen-gtk3 qtcurve-gtk2 qtcurve-kde4
+package_install oxygen-gtk2 oxygen-gtk3-git qtcurve-gtk2 qtcurve-kde4
 
 # wallpaper links
 ! ( lspci | grep VirtualBox ) && sudo ln -fs ~/dotfiles/wallpaper/CaledoniaWallpapers/* /usr/share/wallpapers/
@@ -534,8 +533,8 @@ package_install sshfs
 # backup utilities
 package_install rsync rsnapshot rdiff-backup
 
-# package management
-package_install octopi-frameworks
+# notifier for updated packages
+package_install octopi-notifier-qt5
 
 # conky
 # https://wiki.archlinux.org/index.php/conky
@@ -596,7 +595,7 @@ package_install xscreensaver
 # --------------------------------------------------
 
 # web browsers
-package_install google-chrome firefox flashplugin kpartsplugin icedtea-web
+package_install google-chrome firefox flashplugin icedtea-web
 
 # sqlite
 package_install sqlite sqliteman
@@ -619,7 +618,7 @@ package_install calibre
 package_install shotwell
 
 # aftershot pro
-package_install aftershotpro
+package_install aftershotpro2
 
 # mozilla thunderbird
 package_install thunderbird
@@ -670,7 +669,7 @@ package_install masterpdfeditor
 package_install haroopad
 
 # LaTeX equation editor
-package_install equalx-bzr texlive-core
+package_install equalx texlive-core
 
 # trash-cli (cross-desktop trash access from command line)
 package_install trash-cli
