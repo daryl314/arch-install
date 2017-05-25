@@ -583,9 +583,9 @@ package_install verynice
 sudo systemctl enable verynice.service
 
 # bittorrent sync
-package_install btsync
-systemctl --user start btsync
-systemctl --user enable btsync
+package_install rslsync
+systemctl --user start rslsync
+systemctl --user enable rslsync
 
 # xscreensaver (KDE backup)
 package_install xscreensaver
