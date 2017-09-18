@@ -512,6 +512,9 @@ package_install markdown python-markdown elinks
 # atom text editor
 package_install atom-editor-bin
 
+# visual studio code
+package_install visual-studio-code
+
 # --------------------------------------------------
 # System tools
 # --------------------------------------------------
