@@ -378,7 +378,7 @@ echo "options loop max_part=15" | sudo tee /etc/modprobe.d/loop_partitions.conf
 package_install docker
 sudo systemctl start docker.service
 sudo systemctl enable docker.service
-
+sudo gpasswd -a daryl docker
 
 # --------------------------------------------------
 # KDE
@@ -513,9 +513,6 @@ package_install python-yaml
 
 # markdown to html
 package_install markdown python-markdown elinks
-
-# atom text editor
-package_install atom-editor-bin
 
 # visual studio code
 package_install visual-studio-code
