@@ -244,7 +244,12 @@ sudo chmod +x /etc/cron.daily/nas_sync
 # make server mountpoints
 sudo mkdir -p /mnt/server
 sudo mkdir -p /mnt/server-local
-sudo mkdir -p /mnt/nas-home
+sudo mkdir -p /mnt/nas/daryl
+sudo mkdir -p /mnt/nas/janet_photos
+sudo mkdir -p /mnt/nas/kate
+sudo mkdir -p /mnt/nas/music
+sudo mkdir -p /mnt/nas/photo
+sudo mkdir -p /mnt/nas/video
 sudo chown daryl /mnt/*
 sudo chgrp users /mnt/*
 
@@ -267,12 +272,12 @@ sudo systemctl start remote-fs.target
 if ! grep -q nas-home /etc/fstab
 then echo "
 # nas mounts
-192.168.254.50:/volume1/homes/daryl /mnt/nas-home nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
-192.168.254.50:/volume1/photo /home/daryl/Media/Photos/My\040Photos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
-192.168.254.50:/volume1/janet_photos /home/daryl/Media/Photos/Janet nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
-192.168.254.50:/volume1/music /home/daryl/Media/Music nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
-192.168.254.50:/volume1/video /home/daryl/Media/Videos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
-192.168.254.50:/volume1/homes/kate /home/daryl/Documents/Kate nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/homes/daryl  /mnt/nas/daryl        nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/photo        /mnt/nas/photo        nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/janet_photos /mnt/nas/janet_photos nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/music        /mnt/nas/music        nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/video        /mnt/nas/video        nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+192.168.254.50:/volume1/homes/kate   /mnt/nas/kate         nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
 " | sudo tee -a /etc/fstab
 
 # webdav setup
