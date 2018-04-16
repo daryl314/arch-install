@@ -199,9 +199,8 @@ fi
 # Common setup
 # --------------------------------------------------
 
-# install fish shell and make default
+# install fish shell
 package_install fish powerline-fonts-git
-sudo chsh -s /usr/bin/fish daryl
 
 # ack
 package_install ack
