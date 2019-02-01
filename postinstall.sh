@@ -199,6 +199,11 @@ fi
 # Common setup
 # --------------------------------------------------
 
+# avahi for .local name resolution
+package_install nss-mdns
+sudo systemctl start avahi-daemon.service
+sudo sed -i.bak 's/resolve/mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
+
 # install fish shell
 package_install fish powerline-fonts-git
 
