@@ -288,17 +288,6 @@ diskstation:/volume1/music                      /home/daryl/Music      nfs noaut
 diskstation:/volume1/video                      /home/daryl/Videos     nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
 " | sudo tee -a /etc/fstab
 
-# webdav setup
-package_install davfs2
-mkdir -p ~/owncloud
-sudo usermod -a -G network daryl
-if ! grep -q owncloud /etc/fstab
-then echo "
-# owncloud configuration
-#https://darylstlaurent.com:443/owncloud/files/webdav.php /home/daryl/owncloud davfs user,noauto,uid=daryl,file_mode=600,dir_mode=700 0 1
-" | sudo tee -a /etc/fstab
-fi
-
 # change default behavior of function keys on apple keyboard
 # https://wiki.archlinux.org/index.php/Apple_Keyboard
 echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
