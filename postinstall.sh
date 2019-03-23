@@ -239,10 +239,10 @@ package_install cronie
 sudo systemctl start cronie
 sudo systemctl enable cronie
 echo "#!/bin/bash
-su daryl -c /home/daryl/dotfiles/bin/evernote_sync" | sudo tee /etc/cron.hourly/evernote_sync
+su daryl -c /home/daryl/bin_private/evernote_sync" | sudo tee /etc/cron.hourly/evernote_sync
 sudo chmod +x /etc/cron.hourly/evernote_sync
 echo "#!/bin/bash
-/home/daryl/dotfiles/bin/sync_to_nas.sh > /dev/null" | sudo tee /etc/cron.daily/nas_sync
+/home/daryl/bin_private/sync_to_nas.sh > /dev/null" | sudo tee /etc/cron.daily/nas_sync
 sudo chmod +x /etc/cron.daily/nas_sync
 
 # make server mountpoints
